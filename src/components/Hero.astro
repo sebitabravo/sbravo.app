@@ -67,7 +67,12 @@ const toolCount =
     .hero__veil {
       background:
         linear-gradient(90deg, var(--color-ink) 0%, transparent 70%),
-        linear-gradient(180deg, transparent 0%, rgb(6 6 10 / 0.72) 26%, var(--color-ink) 52%);
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          color-mix(in srgb, var(--color-ink) 72%, transparent) 26%,
+          var(--color-ink) 52%
+        );
     }
   }
   .hero__drip {
@@ -112,26 +117,35 @@ const toolCount =
     // ease-in: el orbe se mantiene arriba y recién se apaga al acercarse al borde
     stage.style.opacity = String(1 - progress * progress * 0.85);
   };
-  if (!reduced) {
-    let fadeFrame = 0;
-    const scheduleFade = () => {
-      if (fadeFrame) return;
-      fadeFrame = requestAnimationFrame(() => {
-        fadeFrame = 0;
-        fadeStage();
-      });
-    };
-    window.addEventListener("scroll", scheduleFade, { passive: true });
-    window.addEventListener(
-      "resize",
-      () => {
-        heroHeight = hero.offsetHeight;
-        scheduleFade();
-      },
-      { passive: true },
-    );
-    fadeStage();
-  }
+  let fadeFrame = 0;
+  const scheduleFade = () => {
+    if (fadeFrame) return;
+    fadeFrame = requestAnimationFrame(() => {
+      fadeFrame = 0;
+      fadeStage();
+    });
+  };
+  const onResize = () => {
+    heroHeight = hero.offsetHeight;
+    scheduleFade();
+  };
+  // sigue la preferencia en vivo, igual que el resto del motion del sitio
+  const setFadeEnabled = (enabled: boolean) => {
+    if (enabled) {
+      window.addEventListener("scroll", scheduleFade, { passive: true });
+      window.addEventListener("resize", onResize, { passive: true });
+      scheduleFade();
+      return;
+    }
+    window.removeEventListener("scroll", scheduleFade);
+    window.removeEventListener("resize", onResize);
+    cancelAnimationFrame(fadeFrame);
+    fadeFrame = 0;
+    stage.style.opacity = "1";
+  };
+  const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
+  motionPreference.addEventListener("change", (event) => setFadeEnabled(!event.matches));
+  setFadeEnabled(!motionPreference.matches);
 
   const hasWebGL = (() => {
     try {
