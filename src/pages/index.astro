@@ -1,6 +1,7 @@
 ---
 import Base from "../layouts/Base.astro";
 import Intro from "../components/Intro.astro";
+import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import Ticker from "../components/sections/Ticker.astro";
 import Catalog from "../components/sections/Catalog.astro";
@@ -14,10 +15,16 @@ import { sortByDateDesc } from "../lib/catalog";
 
 const sortedApps = sortByDateDesc(apps, (app) => app.uploaded);
 const sortedNews = sortByDateDesc(news, (item) => item.date);
+const navLinks = [
+  { label: "Catalog", href: "#catalog" },
+  ...(sortedNews.length > 0 ? [{ label: "Updates", href: "#news" }] : []),
+  { label: "Support", href: "#support" },
+];
 ---
 
 <Base intro>
   <Intro />
+  <Header links={navLinks} />
   <main>
     <Hero />
     <Ticker text={site.ticker} />

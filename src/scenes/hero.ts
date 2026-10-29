@@ -216,8 +216,9 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
   };
 
   // solo renderiza si el hero está visible y la pestaña activa
+  const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
   function loop() {
-    const shouldRun = inView && !document.hidden;
+    const shouldRun = inView && !document.hidden && !motionPreference.matches;
     if (shouldRun && !running) {
       running = true;
       frame = requestAnimationFrame(tick);
@@ -227,6 +228,7 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
     }
   }
   document.addEventListener("visibilitychange", loop);
+  motionPreference.addEventListener("change", loop);
   loop();
 
   return {
@@ -249,6 +251,7 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
       cancelAnimationFrame(frame);
       window.removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", loop);
+      motionPreference.removeEventListener("change", loop);
       resizeObserver.disconnect();
       intersection.disconnect();
       blobGeometry.dispose();

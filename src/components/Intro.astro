@@ -1,20 +1,25 @@
 ---
-import { site } from "../data/catalog";
+import Logo from "./Logo.astro";
 
-const letters = site.name.split("");
+const letters = "sbravo".split("");
 ---
 
-<div class="intro" data-intro aria-hidden="true">
-  <div class="intro__panel intro__panel--top"></div>
-  <div class="intro__panel intro__panel--bottom"></div>
-  <div class="intro__center">
-    <div class="intro__word">
-      {letters.map((letter) => <span class="intro__letter">{letter}</span>)}
+<div class="intro pointer-events-none fixed inset-0 z-100 grid place-items-center" data-intro aria-hidden="true">
+  <div class="intro__panel intro__panel--top absolute inset-x-0 top-0 h-[50.5%] bg-ink"></div>
+  <div class="intro__panel intro__panel--bottom absolute inset-x-0 bottom-0 h-[50.5%] bg-ink"></div>
+  <div class="relative grid justify-items-center gap-5">
+    <div class="flex overflow-hidden text-[clamp(44px,10vw,120px)] leading-none">
+      <span class="intro__letter inline-block"><Logo /></span>
+      {
+        letters.map((letter) => (
+          <span class="intro__letter grad-text inline-block font-display font-bold tracking-[-0.04em]">{letter}</span>
+        ))
+      }
     </div>
-    <div class="intro__bar"><i></i></div>
+    <div class="intro__bar h-px w-[min(240px,60vw)] overflow-hidden bg-line"><i class="block h-full bg-(image:--grad)"></i></div>
   </div>
-  <span class="intro__count eyebrow">000</span>
-  <span class="intro__label eyebrow">Loading experience</span>
+  <span class="intro__count eyebrow absolute right-(--gutter) bottom-7 text-sm text-fg tabular-nums">000</span>
+  <span class="intro__label eyebrow absolute bottom-7 left-(--gutter)">Loading experience</span>
 </div>
 
 <noscript>
@@ -34,80 +39,6 @@ const letters = site.name.split("");
   </style>
 </noscript>
 
-<style>
-  .intro {
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: grid;
-    place-items: center;
-    pointer-events: none;
-  }
-  .intro__panel {
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 50.5%;
-    background: var(--bg);
-  }
-  .intro__panel--top {
-    top: 0;
-  }
-  .intro__panel--bottom {
-    bottom: 0;
-  }
-  .intro__center {
-    position: relative;
-    display: grid;
-    gap: 20px;
-    justify-items: center;
-  }
-  .intro__word {
-    display: flex;
-    overflow: hidden;
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-size: clamp(40px, 10vw, 120px);
-    letter-spacing: -0.03em;
-    line-height: 1;
-  }
-  .intro__letter {
-    display: inline-block;
-    transform: translateY(105%);
-    background: var(--grad);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .intro__bar {
-    width: min(240px, 60vw);
-    height: 1px;
-    background: var(--line);
-    overflow: hidden;
-  }
-  .intro__bar i {
-    display: block;
-    height: 100%;
-    background: var(--grad);
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-  .intro__count,
-  .intro__label {
-    position: absolute;
-    bottom: 28px;
-    font-variant-numeric: tabular-nums;
-  }
-  .intro__count {
-    right: var(--gutter);
-    font-size: 14px;
-    color: var(--text);
-  }
-  .intro__label {
-    left: var(--gutter);
-  }
-</style>
-
 <script>
   import { gsap } from "gsap";
 
@@ -115,9 +46,20 @@ const letters = site.name.split("");
   const count = root.querySelector<HTMLElement>(".intro__count")!;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // el intro completo se ve una vez por sesión; volver desde una app no lo repite
+  const seen = (() => {
+    try {
+      const value = sessionStorage.getItem("sb-intro-seen") === "1";
+      sessionStorage.setItem("sb-intro-seen", "1");
+      return value;
+    } catch {
+      return false;
+    }
+  })();
+
   // al recargar, Chrome restaura el scroll y el intro terminaría revelando la mitad de la página
   history.scrollRestoration = "manual";
-  window.scrollTo(0, 0);
+  if (!seen) window.scrollTo(0, 0);
 
   const finish = () => {
     root.remove();
@@ -132,9 +74,10 @@ const letters = site.name.split("");
     setTimeout(resolve, 3500);
   });
 
-  if (reduced) {
+  if (reduced || seen) {
     window.dispatchEvent(new CustomEvent("intro:open"));
     finish();
+    if (location.hash) document.querySelector(location.hash)?.scrollIntoView();
   } else {
     const progress = { value: 0 };
     const render = () => (count.textContent = String(Math.round(progress.value)).padStart(3, "0"));
@@ -148,7 +91,7 @@ const letters = site.name.split("");
         .timeline({ onComplete: finish })
         .to(progress, { value: 100, duration: 0.45, ease: "power1.out", onUpdate: render })
         .to(".intro__bar i", { scaleX: 1, duration: 0.45, ease: "power1.out" }, "<")
-        .to(".intro__letter", { y: "-105%", duration: 0.7, ease: "expo.in", stagger: 0.04 })
+        .to(".intro__letter", { y: "-105%", duration: 0.6, ease: "expo.out", stagger: 0.04 })
         .to([".intro__count", ".intro__label", ".intro__bar"], { opacity: 0, duration: 0.3 }, "<")
         .add(() => window.dispatchEvent(new CustomEvent("intro:open")))
         .to(".intro__panel--top", { yPercent: -100, duration: 1.2, ease: "expo.inOut" })

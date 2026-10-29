@@ -1,0 +1,33 @@
+---
+import Logo from "./Logo.astro";
+
+interface Props {
+  links: { label: string; href: string }[];
+}
+
+const { links } = Astro.props;
+---
+
+<header class="absolute inset-x-0 top-0 z-50">
+  <div class="shell flex h-20 items-center justify-between gap-6">
+    <a href="/" class="text-[22px] text-fg" aria-label="sbravo home">
+      <Logo wordmark title="" />
+    </a>
+    <nav aria-label="Primary">
+      <ul class="flex items-center gap-1 text-sm">
+        {
+          links.map((link) => (
+            <li>
+              <a
+                class="inline-flex min-h-11 items-center rounded-full px-3.5 text-muted transition-colors hover:bg-white/5 hover:text-fg"
+                href={link.href}
+              >
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>

@@ -1,6 +1,7 @@
 ---
 import type { Site } from "../../lib/types";
-import { splitWords } from "../../scripts/split";
+import Logo from "../Logo.astro";
+import Arrow from "../icons/Arrow.astro";
 
 interface Props {
   site: Site;
@@ -10,70 +11,24 @@ const { site } = Astro.props;
 const year = new Date().getFullYear();
 ---
 
-<footer class="footer">
-  <div class="container footer__inner">
-    <div class="footer__brand" data-reveal>
-      <a class="footer__wordmark" href="/" aria-label={`${site.name} home`} data-split>
-        {splitWords(site.name).map((token) =>
-          /^\s+$/u.test(token) ? token : <span class="footer__word">{token}</span>
-        )}
+<footer class="border-t border-line bg-surface pt-13.5 pb-6">
+  <div class="shell grid gap-10.5">
+    <div data-reveal>
+      <a class="inline-block text-[clamp(28px,5vw,48px)]" href="/" aria-label={`${site.name} home`}>
+        <Logo wordmark title="" />
       </a>
-      <p>Thank you for being here and helping good tools find their people.</p>
+      <p class="mt-3 max-w-[48ch] text-[13px] text-muted">
+        Thank you for being here and helping good tools find their people.
+      </p>
     </div>
-    <div class="footer__bottom">
-      <span>© {year} {site.name}</span>
+    <div
+      class="flex flex-wrap justify-between gap-x-5 gap-y-3 border-t border-line pt-4.5 font-mono text-[10px] text-muted"
+    >
+      <span class="tabular-nums">&copy; {year} {site.name}</span>
       <span>Made with intention.</span>
-      <a href="/" aria-label="Back to top">Back to top ↑</a>
+      <a class="inline-flex items-center gap-1.5 text-fg transition-colors hover:text-cyan" href="#top">
+        Back to top <Arrow direction="up" class="size-3.5" />
+      </a>
     </div>
   </div>
 </footer>
-
-<style>
-  .footer {
-    padding-block: 54px 24px;
-    border-top: 1px solid var(--line);
-    background: var(--bg-elev);
-  }
-  .footer__inner {
-    display: grid;
-    gap: 42px;
-  }
-  .footer__wordmark {
-    display: inline-block;
-    overflow: hidden;
-    font-family: var(--font-display);
-    font-size: clamp(28px, 5vw, 48px);
-    font-weight: 700;
-    letter-spacing: -0.07em;
-  }
-  .footer__word {
-    display: inline-block;
-    background: var(--grad);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-  }
-  .footer__brand p {
-    max-width: 48ch;
-    margin: 12px 0 0;
-    color: var(--muted);
-    font-size: 13px;
-  }
-  .footer__bottom {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 12px 20px;
-    padding-top: 18px;
-    border-top: 1px solid var(--line);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: 10px;
-  }
-  .footer__bottom a {
-    color: var(--text);
-  }
-  .footer__bottom a:hover {
-    color: var(--accent-2);
-  }
-</style>

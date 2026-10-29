@@ -9,6 +9,8 @@ export interface App {
   category: string;
   accent: string;
   downloadUrl: string;
+  /** Imagen en public/thumbs, ej. "/thumbs/my-tool.webp"; sin ella se usa el arte generado */
+  thumb?: string;
   platforms: string[];
   /** Tamaño legible del instalador, ej. "4.2 MB" */
   size: string;

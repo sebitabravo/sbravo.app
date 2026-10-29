@@ -3,118 +3,58 @@ import { apps, site } from "../data/catalog";
 import { formatDate } from "../lib/catalog";
 ---
 
-<section class="hero" data-hero>
-  <div class="hero__stage" aria-hidden="true">
-    <div class="hero__fallback"></div>
-    <canvas class="hero__canvas"></canvas>
+<section id="top" class="hero group relative isolate grid min-h-svh grid-rows-[1fr_auto] overflow-hidden" data-hero>
+  <div class="hero__stage absolute inset-0 -z-10" aria-hidden="true">
+    <div class="hero__fallback absolute inset-0 opacity-0 transition-opacity duration-600 group-[.no-webgl]:opacity-100"></div>
+    <canvas class="hero__canvas block h-full w-full group-[.no-webgl]:hidden"></canvas>
+    <div class="hero__veil pointer-events-none absolute inset-0"></div>
   </div>
 
-  <div class="hero__content container">
-    <p class="eyebrow hero__line">Free software hub{apps.length > 0 && ` · ${apps.length} tools`}</p>
-    <h1 class="hero__title">
-      <span class="hero__mask"><span class="hero__word">Tools that</span></span>
-      <span class="hero__mask"><span class="hero__word">feel like</span></span>
-      <span class="hero__mask"><span class="hero__word grad-text">magic.</span></span>
+  <div class="shell self-center pt-24">
+    <p class="eyebrow hero__line loading:opacity-0">
+      Free software hub{apps.length > 0 && ` · ${apps.length} tools`}
+    </p>
+    <h1 class="mt-5 mb-7 flex flex-col text-[clamp(44px,9.5vw,148px)]">
+      <span class="block overflow-hidden pb-[0.06em]"><span class="hero__word inline-block">Tools that</span></span>
+      <span class="block overflow-hidden pb-[0.06em]"><span class="hero__word inline-block">feel like</span></span>
+      <span class="block overflow-hidden pb-[0.06em]"><span class="hero__word grad-text inline-block">magic.</span></span>
     </h1>
-    <p class="hero__lead hero__line">{site.tagline} Lightweight apps, honest changelogs, zero bloat.</p>
-    <div class="hero__actions hero__line">
-      <a class="btn btn--primary" href="#catalog">Browse catalog</a>
+    <p class="hero__line mb-9 max-w-[44ch] text-[clamp(16px,1.6vw,20px)] text-muted loading:opacity-0">
+      {site.tagline} Lightweight apps, honest changelogs, zero bloat.
+    </p>
+    <div class="hero__line flex flex-wrap gap-3 loading:opacity-0">
+      <a class="btn btn-primary" href="#catalog">Browse catalog</a>
       <a class="btn" href={site.supportUrl}>Support the project</a>
     </div>
   </div>
 
-  <div class="hero__meta container hero__line">
-    <span class="eyebrow">Last update &middot; {formatDate(site.updated)}</span>
-    <span class="eyebrow hero__scroll">Scroll <i aria-hidden="true"></i></span>
+  <div class="hero__line shell flex justify-between pb-7 loading:opacity-0">
+    <span class="eyebrow">Last update &middot; <span class="tabular-nums">{formatDate(site.updated)}</span></span>
+    <span class="eyebrow inline-flex items-center gap-2.5">
+      Scroll <i class="hero__drip h-8 w-px bg-linear-to-b from-fg to-transparent" aria-hidden="true"></i>
+    </span>
   </div>
 </section>
 
 <style>
-  .hero {
-    position: relative;
-    min-height: 100svh;
-    display: grid;
-    grid-template-rows: 1fr auto;
-    overflow: hidden;
-    isolation: isolate;
-  }
-  .hero__stage {
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-  }
-  .hero__canvas {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-  /* se muestra cuando no hay WebGL o con reduced motion */
+  /* capas de gradiente múltiples: más legibles en CSS que como clases arbitrarias */
   .hero__fallback {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
     background:
-      radial-gradient(40% 45% at 70% 45%, rgba(124, 92, 255, 0.45), transparent 70%),
-      radial-gradient(30% 35% at 62% 58%, rgba(0, 212, 255, 0.35), transparent 70%);
-    transition: opacity 0.6s;
+      radial-gradient(40% 45% at 70% 45%, rgb(124 92 255 / 0.45), transparent 70%),
+      radial-gradient(30% 35% at 62% 58%, rgb(0 212 255 / 0.35), transparent 70%);
   }
-  .hero.no-webgl .hero__fallback {
-    opacity: 1;
+  .hero__veil {
+    background:
+      linear-gradient(90deg, var(--color-ink) 0%, transparent 55%),
+      linear-gradient(0deg, var(--color-ink), transparent 30%);
   }
-  .hero.no-webgl .hero__canvas {
-    display: none;
-  }
-  .hero__stage::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, var(--bg) 0%, transparent 55%), linear-gradient(0deg, var(--bg), transparent 30%);
-    pointer-events: none;
-  }
-  .hero__content {
-    align-self: center;
-    padding-top: 96px;
-  }
-  .hero__title {
-    font-size: clamp(44px, 9.5vw, 148px);
-    margin: 20px 0 28px;
-    display: flex;
-    flex-direction: column;
-  }
-  .hero__mask {
-    display: block;
-    overflow: hidden;
-    padding-bottom: 0.06em;
-  }
-  .hero__word {
-    display: inline-block;
-  }
-  .hero__lead {
-    color: var(--muted);
-    font-size: clamp(16px, 1.6vw, 20px);
-    max-width: 44ch;
-    margin: 0 0 36px;
-  }
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-  .hero__meta {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 28px;
-  }
-  .hero__scroll {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .hero__scroll i {
-    width: 1px;
-    height: 32px;
-    background: linear-gradient(var(--text), transparent);
+  .hero__drip {
     animation: drip 1.8s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero__drip {
+      animation: none;
+    }
   }
   @keyframes drip {
     0% {
@@ -132,13 +72,6 @@ import { formatDate } from "../lib/catalog";
       transform: scaleY(0);
       transform-origin: bottom;
     }
-  }
-  /* estado inicial antes del reveal; sin JS el contenido queda visible */
-  :global(body.is-loading) .hero__word {
-    transform: translateY(110%);
-  }
-  :global(body.is-loading) .hero__line {
-    opacity: 0;
   }
 </style>
 

@@ -94,17 +94,24 @@ function applyScrollMotion(): void {
 
   document.querySelectorAll<HTMLElement>("[data-ticker-track]").forEach((track) => {
     const reverse = track.closest(".ticker__row")?.classList.contains("ticker__row--reverse") ?? false;
-    tickerAnimations.push(
-      gsap.fromTo(
-        track,
-        { xPercent: reverse ? -50 : 0 },
-        { xPercent: reverse ? 0 : -50, duration: reverse ? 34 : 28, ease: "none", repeat: -1 },
-      ),
+    const animation = gsap.fromTo(
+      track,
+      { xPercent: reverse ? -50 : 0 },
+      { xPercent: reverse ? 0 : -50, duration: reverse ? 34 : 28, ease: "none", repeat: -1, paused: true },
     );
+    tickerAnimations.push(animation);
+    // el marquee solo corre mientras se ve, así no compite por el main thread fuera de pantalla
+    ScrollTrigger.create({
+      trigger: track,
+      start: "top bottom",
+      end: "bottom top",
+      onToggle: (self) => (self.isActive ? animation.play() : animation.pause()),
+    });
   });
 
   if (finePointer.matches) {
     document.querySelectorAll<HTMLElement>("[data-app-card]").forEach((card) => {
+      const glare = card.querySelector<HTMLElement>(".app-card__glare");
       card.addEventListener("pointermove", (event) => {
         const bounds = card.getBoundingClientRect();
         const x = event.clientX - bounds.left;
@@ -112,8 +119,8 @@ function applyScrollMotion(): void {
         const rotateX = ((y / bounds.height) - 0.5) * -7;
         const rotateY = ((x / bounds.width) - 0.5) * 7;
 
-        card.style.setProperty("--pointer-x", `${x}px`);
-        card.style.setProperty("--pointer-y", `${y}px`);
+        // mover la capa con transform evita repintar el gradiente en cada pointermove
+        if (glare) glare.style.transform = `translate3d(${x}px, ${y}px, 0)`;
         gsap.to(card, {
           rotateX,
           rotateY,
@@ -137,14 +144,16 @@ function applyScrollMotion(): void {
     });
 
     document.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((link) => {
+      const moveX = gsap.quickTo(link, "x", { duration: 0.2, ease: "power2.out" });
+      const moveY = gsap.quickTo(link, "y", { duration: 0.2, ease: "power2.out" });
       link.addEventListener("pointermove", (event) => {
         const bounds = link.getBoundingClientRect();
-        const x = event.clientX - bounds.left - bounds.width / 2;
-        const y = event.clientY - bounds.top - bounds.height / 2;
-        gsap.to(link, { x: x * 0.08, y: y * 0.12, duration: 0.35, ease: "power2.out" });
+        moveX((event.clientX - bounds.left - bounds.width / 2) * 0.08);
+        moveY((event.clientY - bounds.top - bounds.height / 2) * 0.12);
       });
       link.addEventListener("pointerleave", () => {
-        gsap.to(link, { x: 0, y: 0, duration: 0.45, ease: "power2.out" });
+        moveX(0);
+        moveY(0);
       });
     });
   }

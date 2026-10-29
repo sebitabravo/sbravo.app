@@ -35,6 +35,7 @@ export function validateCatalog(apps: App[], news: NewsItem[]): string[] {
     if (!SEMVER.test(app.version)) errors.push(`Invalid version for ${app.slug}: ${app.version}`);
     if (!ISO_DATE.test(app.uploaded)) errors.push(`Invalid date for ${app.slug}: ${app.uploaded}`);
     if (app.platforms.length === 0) errors.push(`Missing platforms for ${app.slug}`);
+    if (app.thumb !== undefined && !app.thumb.startsWith("/thumbs/")) errors.push(`Invalid thumb for ${app.slug}`);
     if (app.sha256 !== undefined && !SHA256.test(app.sha256)) errors.push(`Invalid sha256 for ${app.slug}`);
   }
 

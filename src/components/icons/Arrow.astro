@@ -1,0 +1,14 @@
+---
+interface Props {
+  class?: string;
+  /** "up-right" para enlaces externos o de detalle, "up" para volver arriba */
+  direction?: "up-right" | "up";
+}
+
+const { class: className, direction = "up-right" } = Astro.props;
+const d = direction === "up" ? "M12 19V5M6 11l6-6 6 6" : "M7 17 17 7M8 7h9v9";
+---
+
+<svg viewBox="0 0 24 24" class={className} fill="none" aria-hidden="true">
+  <path d={d} stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+</svg>

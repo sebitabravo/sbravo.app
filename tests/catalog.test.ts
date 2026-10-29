@@ -80,6 +80,11 @@ describe("validateCatalog", () => {
     expect(validateCatalog([{ ...base, sha256: "a".repeat(64) }], [])).toEqual([]);
   });
 
+  it("requires thumbs to live in /thumbs/", () => {
+    expect(validateCatalog([{ ...base, thumb: "https://cdn.example/x.png" }], [])).toEqual(["Invalid thumb for demo"]);
+    expect(validateCatalog([{ ...base, thumb: "/thumbs/demo.webp" }], [])).toEqual([]);
+  });
+
   it("accepts the shipped catalog data", () => {
     expect(validateCatalog(apps, news)).toEqual([]);
   });

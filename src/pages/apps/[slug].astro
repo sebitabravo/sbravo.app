@@ -1,5 +1,6 @@
 ---
 import Base from "../../layouts/Base.astro";
+import Logo from "../../components/Logo.astro";
 import { apps, news } from "../../data/catalog";
 import { formatDate, sortByDateDesc, versionAnchor } from "../../lib/catalog";
 import type { App } from "../../lib/types";
@@ -13,36 +14,68 @@ const changelog = sortByDateDesc(
   news.filter((item) => item.app === app.slug),
   (item) => item.date,
 );
+const facts = [
+  { label: "Platforms", value: app.platforms.join(", ") },
+  { label: "File size", value: app.size },
+  { label: "Version", value: app.version },
+];
 ---
 
-<Base title={`${app.title} ${app.version} - SBRAVO`} description={app.description}>
-  <main class="detail container section" style={`--app-accent:${app.accent}`}>
-    <a href="/" class="eyebrow back">&larr; Back to catalog</a>
-    <div class="detail__head">
-      <div class="detail__orb" aria-hidden="true"></div>
+<Base title={`${app.title} ${app.version} - sbravo`} description={app.description}>
+  <main class="shell section-y" style={`--app-accent:${app.accent}`}>
+    <a href="/#catalog" class="eyebrow mb-12 inline-flex items-center gap-3 transition-colors hover:text-fg">
+      <Logo class="text-lg" title="" /> Back to catalog
+    </a>
+    <div class="grid grid-cols-1 items-center gap-[clamp(24px,6vw,80px)] md:grid-cols-[minmax(0,320px)_1fr]">
+      {
+        app.thumb ? (
+          <img src={app.thumb} alt="" class="aspect-square w-full max-w-55 rounded-card object-cover md:max-w-none" />
+        ) : (
+          <div class="detail__orb aspect-square max-w-55 rounded-full md:max-w-none" aria-hidden="true" />
+        )
+      }
       <div>
         <p class="eyebrow">{app.category} &middot; v{app.version}</p>
-        <h1>{app.title}</h1>
-        <p class="detail__desc">{app.description}</p>
-        <p class="eyebrow">by {app.author} &middot; uploaded {formatDate(app.uploaded)}</p>
-        <a class="btn btn--primary" href={app.downloadUrl}>Download v{app.version} &middot; {app.size}</a>
-        <p class="eyebrow trust-note">Direct download &middot; No ads &middot; No bundled software</p>
+        <h1 class="mt-3 mb-5 text-[clamp(48px,9vw,120px)]">{app.title}</h1>
+        <p class="max-w-[52ch] text-lg text-muted">{app.description}</p>
+        <p class="eyebrow mt-4">by {app.author} &middot; uploaded {formatDate(app.uploaded)}</p>
+        <a class="btn btn-primary mt-7" href={app.downloadUrl}>Download v{app.version} &middot; {app.size}</a>
+        <p class="eyebrow mt-4">Direct download &middot; No ads &middot; No bundled software</p>
       </div>
     </div>
 
-    <dl class="facts">
-      <div><dt class="eyebrow">Platforms</dt><dd>{app.platforms.join(", ")}</dd></div>
-      <div><dt class="eyebrow">File size</dt><dd>{app.size}</dd></div>
-      <div><dt class="eyebrow">Version</dt><dd>{app.version}</dd></div>
-      <div>
-        <dt class="eyebrow">SHA-256</dt>
-        <dd class="hash">{app.sha256 ?? "Published with each release"}</dd>
-      </div>
+    <dl
+      class="mt-24 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-px overflow-hidden rounded-card border border-line bg-line"
+    >
+      {
+        facts.map((fact) => (
+          <div class="bg-surface p-6">
+            <dt class="eyebrow">{fact.label}</dt>
+            <dd class="mt-2 text-lg tabular-nums">{fact.value}</dd>
+          </div>
+        ))
+      }
+      {
+        app.sha256 && (
+          <div class="bg-surface p-6">
+            <dt class="eyebrow">SHA-256</dt>
+            <dd class="mt-2 font-mono text-[13px] text-muted wrap-anywhere">{app.sha256}</dd>
+          </div>
+        )
+      }
       {
         (app.virustotalUrl || app.sourceUrl) && (
-          <div class="facts__links">
-            {app.virustotalUrl && <a class="btn" href={app.virustotalUrl} rel="noopener">VirusTotal scan</a>}
-            {app.sourceUrl && <a class="btn" href={app.sourceUrl} rel="noopener">Source code</a>}
+          <div class="flex flex-wrap items-center gap-3 bg-surface p-6">
+            {app.virustotalUrl && (
+              <a class="btn" href={app.virustotalUrl} rel="noopener">
+                VirusTotal scan
+              </a>
+            )}
+            {app.sourceUrl && (
+              <a class="btn" href={app.sourceUrl} rel="noopener">
+                Source code
+              </a>
+            )}
           </div>
         )
       }
@@ -50,14 +83,16 @@ const changelog = sortByDateDesc(
 
     {
       changelog.length > 0 && (
-        <section class="changelog">
+        <section class="mt-30">
           <h2>Changelog</h2>
-          <ol>
+          <ol class="mt-8 border-t border-line">
             {changelog.map((item) => (
-              <li id={versionAnchor(item.version)}>
-                <span class="eyebrow">{formatDate(item.date)} &middot; v{item.version}</span>
-                <h3>{item.title}</h3>
-                <p>{item.summary}</p>
+              <li id={versionAnchor(item.version)} class="border-b border-line py-7">
+                <span class="eyebrow tabular-nums">
+                  {formatDate(item.date)} &middot; v{item.version}
+                </span>
+                <h3 class="my-2 text-[22px]">{item.title}</h3>
+                <p class="text-muted">{item.summary}</p>
               </li>
             ))}
           </ol>
@@ -68,103 +103,17 @@ const changelog = sortByDateDesc(
 </Base>
 
 <style>
-  .back {
-    display: inline-block;
-    margin-bottom: 48px;
-  }
-  .detail__head {
-    display: grid;
-    grid-template-columns: minmax(0, 320px) 1fr;
-    gap: clamp(24px, 6vw, 80px);
-    align-items: center;
-  }
   .detail__orb {
-    aspect-ratio: 1;
-    border-radius: 50%;
     background:
       radial-gradient(circle at 30% 30%, #fff8 0, transparent 30%),
       radial-gradient(circle at 60% 70%, var(--app-accent), transparent 70%),
-      var(--bg-elev);
-    box-shadow: 0 0 120px -20px var(--app-accent);
+      var(--color-surface);
+    box-shadow: 0 30px 120px -20px var(--app-accent);
     animation: float 6s ease-in-out infinite;
-  }
-  h1 {
-    font-size: clamp(48px, 9vw, 120px);
-    margin: 12px 0 20px;
-  }
-  .detail__desc {
-    color: var(--muted);
-    font-size: 18px;
-    max-width: 52ch;
-  }
-  .btn {
-    margin-top: 28px;
-  }
-  .trust-note {
-    margin-top: 16px;
-  }
-  .facts {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 1px;
-    margin: 96px 0 0;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    overflow: hidden;
-    background: var(--line);
-  }
-  .facts > div {
-    padding: 24px;
-    background: var(--bg-elev);
-  }
-  .facts dd {
-    margin: 8px 0 0;
-    font-size: 18px;
-  }
-  .facts .hash {
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--muted);
-    overflow-wrap: anywhere;
-  }
-  .facts .facts__links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    align-items: center;
-  }
-  .changelog {
-    margin-top: 120px;
-  }
-  .changelog ol {
-    list-style: none;
-    padding: 0;
-    margin: 32px 0 0;
-    border-top: 1px solid var(--line);
-  }
-  .changelog li {
-    padding: 28px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .changelog h3 {
-    font-size: 22px;
-    margin: 8px 0;
-  }
-  .changelog p {
-    color: var(--muted);
-    margin: 0;
   }
   @keyframes float {
     50% {
       transform: translateY(-14px);
-    }
-  }
-  @media (max-width: 720px) {
-    .detail__head {
-      grid-template-columns: 1fr;
-    }
-    .detail__orb {
-      max-width: 220px;
     }
   }
 </style>

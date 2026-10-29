@@ -1,132 +1,154 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #06060a;
+  --color-surface: #0e0e15;
+  --color-line: rgb(255 255 255 / 0.08);
+  --color-fg: #ecebf5;
+  --color-muted: #8b8a9c;
+  --color-violet: #7c5cff;
+  --color-cyan: #00d4ff;
+  --color-amber: #ffb547;
+
+  --font-display: "Unbounded Variable", system-ui, sans-serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+
+  --radius-card: 18px;
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* el body lleva is-loading mientras corre el intro */
+@custom-variant loading (&:where(body.is-loading *));
+
 :root {
-  --bg: #06060a;
-  --bg-elev: #0e0e15;
-  --line: rgba(255, 255, 255, 0.08);
-  --text: #ecebf5;
-  --muted: #8b8a9c;
-  --accent: #7c5cff;
-  --accent-2: #00d4ff;
-  --grad: linear-gradient(120deg, var(--accent), var(--accent-2));
-  --radius: 18px;
-  --font-display: "Unbounded", system-ui, sans-serif;
-  --font-body: "Inter", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --grad: linear-gradient(120deg, var(--color-violet), var(--color-cyan));
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1280px;
   color-scheme: dark;
 }
 
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
+@layer base {
+  html {
+    background: var(--color-ink);
+    scrollbar-color: rgb(124 92 255 / 0.45) var(--color-ink);
+  }
+
+  body {
+    background: var(--color-ink);
+    color: var(--color-fg);
+    font-family: var(--font-sans);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+    caret-color: var(--color-cyan);
+  }
+
+  body.is-loading {
+    overflow: hidden;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    background: rgb(124 92 255 / 0.45);
+    color: var(--color-fg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-cyan);
+    outline-offset: 3px;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
 }
 
-html {
-  background: var(--bg);
-}
-
-html.lenis,
-html.lenis body {
-  height: auto;
-}
-
-.lenis.lenis-stopped {
-  overflow: hidden;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font-body);
-  line-height: 1.55;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-
-/* bloquea scroll mientras corre el intro */
-body.is-loading {
-  overflow: hidden;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-h1,
-h2,
-h3 {
-  font-family: var(--font-display);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  line-height: 1.05;
-  margin: 0;
-}
-
-.container {
+@utility shell {
   width: 100%;
   max-width: var(--max);
-  margin: 0 auto;
+  margin-inline: auto;
   padding-inline: var(--gutter);
 }
 
-.section {
+@utility section-y {
   padding-block: clamp(72px, 12vw, 160px);
 }
 
-.eyebrow {
+@utility eyebrow {
   font-family: var(--font-mono);
   font-size: 12px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--color-muted);
 }
 
-.grad-text {
+@utility grad-text {
   background: var(--grad);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
-.btn {
+@utility btn {
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  min-height: 48px;
   padding: 14px 22px;
   border-radius: 999px;
-  border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--color-line);
+  background: rgb(255 255 255 / 0.04);
   font-weight: 500;
-  transition: background 0.3s, border-color 0.3s, transform 0.3s;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    transform 0.3s var(--ease-expo);
+  &:hover {
+    background: rgb(255 255 255 / 0.08);
+    border-color: rgb(255 255 255 / 0.2);
+  }
 }
 
-.btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.btn--primary {
+@utility btn-primary {
   background: var(--grad);
   border-color: transparent;
-  color: #06060a;
+  color: var(--color-ink);
+  &:hover {
+    background: var(--grad);
+    transform: translateY(-2px);
+  }
 }
 
-.btn--primary:hover {
-  background: var(--grad);
-  transform: translateY(-2px);
+/*
+ * Estados iniciales que GSAP anima con transform. No usan utilidades translate-*
+ * porque Tailwind v4 escribe la propiedad `translate` y GSAP sumaría su transform encima.
+ */
+body.is-loading .hero__word {
+  transform: translateY(110%);
 }
 
-:focus-visible {
-  outline: 2px solid var(--accent-2);
-  outline-offset: 3px;
+.intro__letter {
+  transform: translateY(105%);
+}
+
+.intro__bar i {
+  transform: scaleX(0);
+  transform-origin: left;
 }
 
 @media (prefers-reduced-motion: reduce) {

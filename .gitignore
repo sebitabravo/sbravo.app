@@ -3,3 +3,8 @@ dist
 .astro
 .DS_Store
 .atl
+.shots
+.claude/
+.impeccable/
+# el patrón global Icon? de macOS atrapa esta carpeta por case-insensitive
+!src/components/icons/

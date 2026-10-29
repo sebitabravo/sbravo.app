@@ -2,7 +2,7 @@
 import type { App, NewsItem, Social, Site } from "../lib/types";
 
 export const site: Site = {
-  name: "SBRAVO",
+  name: "sbravo",
   tagline: "Free tools, crafted with care.",
   ticker: "Leave a comment · Support the project · New builds every month · Open source when possible",
   supportUrl: "#support",
@@ -23,6 +23,7 @@ export const site: Site = {
 //   category: "Utility",
 //   accent: "#7c5cff",
 //   downloadUrl: "https://github.com/sebitabravo/my-tool/releases/download/v1.0.0/my-tool-setup.exe",
+//   thumb: "/thumbs/my-tool.webp",
 //   platforms: ["Windows 11"],
 //   size: "5.0 MB",
 //   sha256: "<sha256 del archivo publicado>",
