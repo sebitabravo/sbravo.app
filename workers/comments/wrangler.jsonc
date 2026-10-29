@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sbravo-comments",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "routes": [{ "pattern": "comments.sbravo.app", "custom_domain": true }],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "sbravo-comments",
+      "database_id": "27420ae3-07ef-40cb-879e-448d6479b6b5",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "ALLOWED_ORIGINS": "https://sbravo.app,http://localhost:4321"
+  },
+  "observability": { "enabled": true }
+}

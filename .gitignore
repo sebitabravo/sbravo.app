@@ -9,3 +9,6 @@ dist
 # el patrón global Icon? de macOS atrapa esta carpeta por case-insensitive
 !src/components/icons/
 .audit/
+.dev.vars
+.wrangler/
+workers/comments/worker-configuration.d.ts
