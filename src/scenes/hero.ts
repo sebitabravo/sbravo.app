@@ -190,10 +190,11 @@ export function initHero(
     camera.aspect = width / height;
     // en pantallas angostas se aleja la cámara para que el blob no se corte
     camera.position.z = width < 768 ? 9 : 7;
-    // en desktop el blob se corre a la derecha para no tapar el titular
-    offsetX = width >= 1024 ? 1.6 : 0;
+    // en desktop el blob se corre a la derecha para no tapar el titular; el ancho del
+    // titular crece con la pantalla, así que el corrimiento también
+    offsetX = width >= 1280 ? 3.1 : width >= 1024 ? 2.2 : 0;
     // en mobile va arriba y más chico para que el texto quede legible
-    offsetY = width < 768 ? 2.1 : 0;
+    offsetY = width < 768 ? 2.1 : width >= 1280 ? 0.35 : 0;
     baseScale = width < 768 ? 0.75 : 1;
     camera.updateProjectionMatrix();
   };

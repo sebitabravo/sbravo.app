@@ -1,79 +1,26 @@
 # sbravo
 
-Source of [sbravo.app](https://sbravo.app), a small catalog of free tools built and maintained by
-[@sebitabravo](https://github.com/sebitabravo). Every tool gets its own page with a per-version changelog,
-platforms, file size and checksum, and a direct download.
+Sitio de [sbravo.app](https://sbravo.app): el catálogo de herramientas gratuitas que
+construyo y mantengo yo. Cada app tiene su ficha con versión, plataformas, tamaño,
+hash SHA-256, changelog por release y descarga directa.
 
-The site is static, bilingual (Spanish at `/`, English at `/en/`) and ships no analytics or cookies.
+Es un sitio estático, bilingüe (español en `/`, inglés en `/en/`) y sin analítica,
+cookies ni scripts de terceros. El movimiento respeta `prefers-reduced-motion` y el
+hero cae a un degradado estático cuando no hay WebGL.
+
+## Capturas
+
+<img src="docs/screenshots/home.png" width="100%" alt="Portada con el titular, el orbe del hero y los accesos al catálogo y a GitHub Sponsors" />
+
+<img src="docs/screenshots/catalog.png" width="100%" alt="Sección de catálogo mostrando el estado previo al primer release" />
+
+<img src="docs/screenshots/mobile.png" width="390" alt="Vista móvil de la portada" />
 
 ## Stack
 
-- [Astro](https://astro.build) 7, static output with built-in i18n routing
-- [Tailwind CSS](https://tailwindcss.com) 4 with design tokens in `src/styles/global.css`
-- [three.js](https://threejs.org) for the hero scene, loaded as a separate chunk
-- [GSAP](https://gsap.com) and [Lenis](https://lenis.darkroom.engineering) for scroll motion
-- [Vitest](https://vitest.dev) for the data, i18n and feed helpers
-- [Bun](https://bun.sh) as package manager and script runner
-
-Motion respects `prefers-reduced-motion`, and the hero falls back to a static gradient without WebGL.
-
-## Development
-
-```sh
-bun install --frozen-lockfile
-bun run dev       # http://localhost:4321
-bun run test      # unit tests
-bun run check     # astro + TypeScript diagnostics
-bun run build     # static site in dist/
-```
-
-## Adding a tool
-
-All content lives in `src/data/catalog.ts`. Each app has its text in both languages:
-
-```ts
-{
-  slug: "my-tool",
-  title: "My Tool",
-  version: "1.0.0",
-  description: { es: "Qué hace.", en: "What it does." },
-  author: "sbravo",
-  uploaded: "2026-11-01",
-  category: { es: "Utilidad", en: "Utility" },
-  accent: "#c8b487",
-  downloadUrl: "https://github.com/sebitabravo/my-tool/releases/download/v1.0.0/my-tool-setup.exe",
-  thumb: "/thumbs/my-tool.webp",
-  platforms: ["Windows 11"],
-  size: "5.0 MB",
-  sha256: "<sha256 of the published file>",
-  virustotalUrl: "https://www.virustotal.com/gui/file/<sha256>",
-  sourceUrl: "https://github.com/sebitabravo/my-tool",
-}
-```
-
-- Binaries belong in GitHub Releases, not in this repository.
-- Thumbnails go in `public/thumbs/`.
-- A news entry with the same `slug` shows up in the changelog, the home timeline and the RSS feeds.
-
-The build validates the catalog (slugs, SemVer, dates, translations, hashes) and fails on bad data.
-
-## Project layout
-
-```text
-src/
-  components/   header, hero, intro, logo and page sections
-  data/         catalog content
-  i18n/         typed dictionaries and locale helpers
-  lib/          catalog validation, RSS feed
-  pages/        routes for both locales, feeds and 404
-  scenes/       three.js hero scene
-  scripts/      scroll motion
-  views/        page templates shared by both locales
-docs/og/        HTML sources used to render the Open Graph images
-tests/          unit tests
-```
-
-## Support
-
-If these tools are useful to you, you can support their maintenance through
-[GitHub Sponsors](https://github.com/sponsors/sebitabravo).
+- [Astro](https://astro.build) 7 — salida estática y ruteo i18n integrado
+- [Tailwind CSS](https://tailwindcss.com) 4 — tokens de diseño en `src/styles/global.css`
+- [three.js](https://threejs.org) 0.186 — escena del hero, cargada en un chunk aparte
+- [GSAP](https://gsap.com) y [Lenis](https://lenis.darkroom.engineering) — animación ligada al scroll
+- [Vitest](https://vitest.dev) — tests de catálogo, i18n y feed RSS
+- TypeScript en modo estricto sobre todo el proyecto
