@@ -7,13 +7,14 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6.svg?logo=typescript&logoColor=white)
 ![Vitest](https://img.shields.io/badge/Vitest-5-6E9F18.svg?logo=vitest&logoColor=white)
 
-Sitio de [sbravo.app](https://sbravo.app): el catálogo de herramientas gratuitas que
-construyo y mantengo yo. Cada app tiene su ficha con versión, plataformas, tamaño,
-hash SHA-256, changelog por release y descarga directa.
+**sbravo** es un catálogo de herramientas gratuitas que construyo y mantengo yo,
+publicado en [sbravo.app](https://sbravo.app). Cada herramienta tiene su ficha con
+versión, plataformas, tamaño y changelog por release, y se descarga directo desde
+el sitio o desde GitHub Releases.
 
-Es un sitio estático, bilingüe (español en `/`, inglés en `/en/`) y sin analítica,
-cookies ni scripts de terceros. El movimiento respeta `prefers-reduced-motion` y el
-hero cae a un degradado estático cuando no hay WebGL.
+El sitio es estático y bilingüe (español en `/`, inglés en `/en/`), sin cuentas,
+analítica ni cookies. Todavía no hay releases públicas: el catálogo se abre con la
+primera herramienta.
 
 ## Capturas
 
