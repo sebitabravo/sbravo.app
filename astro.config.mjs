@@ -13,7 +13,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       i18n: { defaultLocale: "es", locales: { es: "es-CL", en: "en-US" } },
-      filter: (page) => !page.includes("/404"),
+      filter: (page) => !page.includes("/404") && !page.includes("/admin/"),
     }),
   ],
   // passthrough evita depender de sharp (bun bloquea su postinstall)

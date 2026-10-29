@@ -22,7 +22,7 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
       {
         title: "Qué se guarda",
         body: [
-          "No hay formularios de registro, cuentas ni base de datos. No hay analítica, píxeles de seguimiento ni publicidad.",
+          "No hay registro ni cuentas. No hay analítica, píxeles de seguimiento ni publicidad. La única base de datos es la de los comentarios, descrita más abajo.",
           "Las tipografías se sirven desde este mismo dominio: el navegador no hace pedidos a Google Fonts ni a terceros.",
         ],
       },
@@ -46,13 +46,13 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
         body: [
           "Los enlaces a GitHub, YouTube, X y GitHub Sponsors salen de este sitio. A partir de ahí rigen las políticas de cada plataforma.",
           "Las descargas pueden alojarse en GitHub Releases, con las mismas condiciones.",
-          "Los comentarios de cada ficha usan giscus, que los guarda en GitHub Discussions. Para comentar inicias sesión con GitHub y lo que escribes queda público en el repositorio del sitio, bajo las políticas de GitHub. El widget se carga solo cuando llegas a esa sección.",
+          "Los comentarios de cada ficha se guardan en una base de datos propia en Cloudflare. Se almacena el nombre que escribas (opcional), el comentario y la fecha. No se pide correo. La IP no se guarda: solo un hash con sal que sirve para frenar spam y no permite recuperarla. Antes de publicar, Cloudflare Turnstile verifica que no seas un bot. Los comentarios son públicos y puedo borrar los que sean spam o abusivos.",
         ],
       },
       {
         title: "Tus derechos",
         body: [
-          "La Ley 19.628 sobre protección de la vida privada, y desde el 1 de diciembre de 2026 la Ley 21.719, reconocen los derechos de acceso, rectificación, supresión y oposición. Como este sitio no almacena datos personales, en la práctica no hay información que rectificar.",
+          "La Ley 19.628 sobre protección de la vida privada, y desde el 1 de diciembre de 2026 la Ley 21.719, reconocen los derechos de acceso, rectificación, supresión y oposición. Si quieres que se corrija o borre un comentario tuyo, escríbeme indicando la ficha y el texto.",
           "Si crees que hay un dato tuyo involucrado, escríbeme por GitHub y te respondo a la brevedad.",
         ],
       },
@@ -67,7 +67,7 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
       {
         title: "What is stored",
         body: [
-          "There are no sign-up forms, accounts or database. No analytics, tracking pixels or advertising.",
+          "There are no sign-ups or accounts. No analytics, tracking pixels or advertising. The only database is the one for comments, described below.",
           "Fonts are served from this same domain: your browser makes no requests to Google Fonts or any third party.",
         ],
       },
@@ -91,13 +91,13 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
         body: [
           "Links to GitHub, YouTube, X and GitHub Sponsors leave this site. From there, each platform's policy applies.",
           "Downloads may be hosted on GitHub Releases, under the same conditions.",
-          "Comments on each listing use giscus, which stores them in GitHub Discussions. You sign in with GitHub to comment and what you write is public in the site repository, under GitHub's policies. The widget only loads when you reach that section.",
+          "Comments on each listing are stored in a database of my own on Cloudflare. It keeps the name you type (optional), the comment and the date. No email is asked for. Your IP is not stored: only a salted hash used to stop spam, which cannot be turned back into the IP. Before publishing, Cloudflare Turnstile checks that you are not a bot. Comments are public and I may delete spam or abusive ones.",
         ],
       },
       {
         title: "Your rights",
         body: [
-          "Chile's Law 19.628, and from December 1, 2026 Law 21.719, grant rights of access, rectification, deletion and objection. Since this site stores no personal data, there is in practice nothing to rectify.",
+          "Chile's Law 19.628, and from December 1, 2026 Law 21.719, grant rights of access, rectification, deletion and objection. If you want a comment of yours corrected or deleted, write to me with the listing and the text.",
           "If you believe data of yours is involved, reach out on GitHub and I will get back to you.",
         ],
       },

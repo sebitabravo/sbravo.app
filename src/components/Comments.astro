@@ -1,27 +1,46 @@
 ---
 import { toLocale, useTranslations } from "../i18n/ui";
+import { COMMENTS_API } from "../scripts/comments";
 
 interface Props {
-  /** clave estable del hilo; la misma en ambos idiomas para no partir la conversación */
+  /** Stable thread key shared across localized routes. */
   term: string;
 }
 
 const { term } = Astro.props;
 const locale = toLocale(Astro.currentLocale);
 const t = useTranslations(locale);
-
-// valores que entrega la API de GitHub para el repo y la categoría "Announcements" de Discussions
-const giscus = {
-  repo: "sebitabravo/sbravo.app",
-  repoId: "R_kgDOVbksMw",
-  category: "Announcements",
-  categoryId: "DIC_kwDOVbksM84DJ6QP",
-  // jsDelivr sirve el CSS con CORS, que giscus exige al cargar un tema propio
-  theme: "https://cdn.jsdelivr.net/gh/sebitabravo/sbravo.app@main/public/giscus.css",
+// la site key de Turnstile es pública por diseño; la variable de entorno permite usar claves de prueba en local
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY ?? "0x4AAAAAAFrD4ze5oh6qabuM";
+const messages = {
+  "comments.anonymous": t("comments.anonymous"),
+  "comments.author": t("comments.author"),
+  "comments.reply": t("comments.reply"),
+  "comments.empty": t("comments.empty"),
+  "comments.retry": t("comments.retry"),
+  "comments.sending": t("comments.sending"),
+  "comments.sent": t("comments.sent"),
+  "comments.error.generic": t("comments.error.generic"),
+  "comments.error.invalidName": t("comments.error.invalidName"),
+  "comments.error.invalidBody": t("comments.error.invalidBody"),
+  "comments.error.invalidParent": t("comments.error.invalidParent"),
+  "comments.error.missingToken": t("comments.error.missingToken"),
+  "comments.error.turnstileFailed": t("comments.error.turnstileFailed"),
+  "comments.error.rateLimited": t("comments.error.rateLimited"),
 };
 ---
 
-<section class="mt-30 scroll-mt-24" id="comments" aria-labelledby="comments-title">
+<section
+  class="mt-30 scroll-mt-24"
+  id="comments"
+  aria-labelledby="comments-title"
+  data-comments-root
+  data-term={term}
+  data-locale={locale}
+  data-api={COMMENTS_API}
+  data-site-key={siteKey}
+  data-messages={JSON.stringify(messages)}
+>
   <div class="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
     <div>
       <p class="eyebrow">{t("comments.eyebrow")}</p>
@@ -29,27 +48,63 @@ const giscus = {
     </div>
     <p class="max-w-[40ch] text-sm text-muted">{t("comments.lead")}</p>
   </div>
-  <div class="comments__frame mt-8 min-h-48" data-comments>
-    <noscript>
-      <p class="text-sm text-muted">{t("comments.noscript")}</p>
-    </noscript>
+
+  <div class="mt-8 grid gap-4" data-comments-list aria-label={t("comments.loading")} aria-live="polite" aria-busy="true">
+    <div class="grid gap-3" aria-hidden="true">
+      <div class="h-28 animate-pulse motion-reduce:animate-none rounded-card border border-line bg-surface"></div>
+      <div class="h-20 w-11/12 animate-pulse motion-reduce:animate-none rounded-card border border-line bg-surface"></div>
+    </div>
   </div>
-  <script
-    is:inline
-    src="https://giscus.app/client.js"
-    data-repo={giscus.repo}
-    data-repo-id={giscus.repoId}
-    data-category={giscus.category}
-    data-category-id={giscus.categoryId}
-    data-mapping="specific"
-    data-term={term}
-    data-strict="1"
-    data-reactions-enabled="1"
-    data-emit-metadata="0"
-    data-input-position="top"
-    data-theme={giscus.theme}
-    data-lang={locale}
-    data-loading="lazy"
-    crossorigin="anonymous"
-    async></script>
+
+  <div class="mt-8 rounded-card border border-line bg-surface p-6 sm:p-8">
+    <form data-comments-form class="grid gap-5" novalidate>
+      <input type="hidden" name="parentId" value="" />
+      <div class="grid gap-2">
+        <label class="eyebrow" for="comment-name">{t("comments.name")}</label>
+        <input
+          id="comment-name"
+          name="name"
+          type="text"
+          maxlength="40"
+          autocomplete="nickname"
+          class="min-h-11 w-full rounded-card border border-line bg-ink px-4 text-base text-fg placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand"
+          placeholder={t("comments.namePlaceholder")}
+        />
+        <p class="text-xs text-muted">{t("comments.nameHint")}</p>
+      </div>
+      <div class="grid gap-2">
+        <label class="eyebrow" for="comment-body">{t("comments.message")}</label>
+        <textarea
+          id="comment-body"
+          name="body"
+          required
+          minlength="2"
+          maxlength="2000"
+          rows="5"
+          class="min-h-36 w-full resize-y rounded-card border border-line bg-ink px-4 py-3 text-base leading-relaxed text-fg placeholder:text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand"
+          placeholder={t("comments.messagePlaceholder")}
+        ></textarea>
+        <div class="flex items-center justify-between gap-4">
+          <p class="text-xs text-muted">{t("comments.messageHint")}</p>
+          <output class="font-mono text-xs tabular-nums text-muted" data-counter aria-live="polite">0/2000</output>
+        </div>
+      </div>
+      <div class="absolute -left-[10000px] h-px w-px overflow-hidden" aria-hidden="true">
+        <label for="comment-website">Website</label>
+        <input id="comment-website" name="website" type="text" tabindex="-1" autocomplete="off" />
+      </div>
+      <div data-turnstile aria-label={t("comments.verification")}></div>
+      <div class="flex flex-wrap items-center gap-3">
+        <button class="btn btn-primary" type="submit">{t("comments.submit")}</button>
+        <button class="btn" type="button" data-cancel-reply hidden>{t("comments.cancelReply")}</button>
+      </div>
+      <p class="text-sm text-muted" data-comments-status aria-live="polite" role="status"></p>
+    </form>
+  </div>
 </section>
+
+<script>
+  import { initComments } from "../scripts/comments";
+
+  initComments();
+</script>

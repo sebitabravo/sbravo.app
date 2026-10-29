@@ -1,0 +1,63 @@
+---
+import Base from "../../layouts/Base.astro";
+import { COMMENTS_API } from "../../scripts/comments";
+
+const adminMessages = {
+  "comments.error.generic": "No se pudo completar la solicitud.",
+  "comments.error.invalidName": "Nombre no válido.",
+  "comments.error.invalidBody": "El comentario debe tener entre 2 y 2000 caracteres.",
+  "comments.error.invalidParent": "No se encontró el comentario al que responder.",
+  "comments.error.missingToken": "Falta el token de verificación.",
+  "comments.error.turnstileFailed": "Falló la verificación de seguridad.",
+  "comments.error.rateLimited": "Demasiadas solicitudes. Inténtalo más tarde.",
+};
+---
+
+<Base title="Administrar comentarios - sbravo" description="Herramientas privadas para moderar comentarios." noindex>
+  <main id="main" tabindex="-1" class="shell section-y min-h-screen pt-24" data-admin-comments data-messages={JSON.stringify(adminMessages)} data-api={COMMENTS_API}>
+    <div class="mx-auto grid max-w-4xl gap-8">
+      <header>
+        <p class="eyebrow">Administración</p>
+        <h1 class="mt-3 text-section">Comentarios</h1>
+        <p class="mt-3 max-w-[55ch] text-muted">Carga un hilo para moderar comentarios o responder como autor.</p>
+      </header>
+
+      <form data-admin-form class="grid gap-5 rounded-card border border-line bg-surface p-6 sm:grid-cols-2 sm:p-8">
+        <div class="grid gap-2">
+          <label class="eyebrow" for="admin-token">Token de administración</label>
+          <input
+            id="admin-token"
+            name="adminToken"
+            type="password"
+            autocomplete="current-password"
+            required
+            class="min-h-11 w-full rounded-card border border-line bg-ink px-4 text-base text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand"
+          />
+        </div>
+        <div class="grid gap-2">
+          <label class="eyebrow" for="admin-thread">Hilo</label>
+          <input
+            id="admin-thread"
+            name="thread"
+            type="text"
+            value="app:"
+            required
+            class="min-h-11 w-full rounded-card border border-line bg-ink px-4 text-base text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sand"
+          />
+        </div>
+        <button class="btn btn-primary sm:col-span-2 sm:justify-self-start" type="submit">Cargar comentarios</button>
+        <p class="text-sm text-muted sm:col-span-2" data-admin-status aria-live="polite" role="status"></p>
+      </form>
+
+      <section aria-label="Comentarios del hilo">
+        <div class="grid gap-4" data-admin-list></div>
+      </section>
+    </div>
+  </main>
+</Base>
+
+<script>
+  import { initAdminComments } from "../../scripts/comments";
+
+  initAdminComments();
+</script>
