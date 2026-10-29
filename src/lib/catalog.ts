@@ -29,6 +29,15 @@ function missingLocales(value: Localized): string[] {
   return locales.filter((locale) => value[locale].trim() === "");
 }
 
+function isParallelList(value: Localized<string[]>): boolean {
+  const [first, ...rest] = locales.map((locale) => value[locale]);
+  return (
+    first.length > 0 &&
+    rest.every((list) => list.length === first.length) &&
+    locales.every((locale) => value[locale].every((item) => item.trim() !== ""))
+  );
+}
+
 export function validateCatalog(apps: App[], news: NewsItem[]): string[] {
   const errors: string[] = [];
   const seen = new Set<string>();
@@ -40,6 +49,8 @@ export function validateCatalog(apps: App[], news: NewsItem[]): string[] {
     if (!SEMVER.test(app.version)) errors.push(`Invalid version for ${app.slug}: ${app.version}`);
     if (!ISO_DATE.test(app.uploaded)) errors.push(`Invalid date for ${app.slug}: ${app.uploaded}`);
     for (const locale of missingLocales(app.description)) errors.push(`Missing ${locale} description for ${app.slug}`);
+    if (app.install && !isParallelList(app.install)) errors.push(`Mismatched install steps for ${app.slug}`);
+    if (app.requirements && !isParallelList(app.requirements)) errors.push(`Mismatched requirements for ${app.slug}`);
     if (app.platforms.length === 0) errors.push(`Missing platforms for ${app.slug}`);
     if (app.thumb !== undefined && !app.thumb.startsWith("/thumbs/")) errors.push(`Invalid thumb for ${app.slug}`);
     if (app.sha256 !== undefined && !SHA256.test(app.sha256)) errors.push(`Invalid sha256 for ${app.slug}`);

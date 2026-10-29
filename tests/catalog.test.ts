@@ -84,6 +84,23 @@ describe("validateCatalog", () => {
     expect(errors).toEqual(["Missing en description for demo"]);
   });
 
+  it("accepts install steps with the same count in both languages", () => {
+    const install = { es: ["Descarga", "Ejecuta"], en: ["Download", "Run"] };
+    expect(validateCatalog([{ ...base, install, requirements: { es: ["Windows 11"], en: ["Windows 11"] } }], [])).toEqual(
+      [],
+    );
+  });
+
+  it("reports install steps that differ between languages", () => {
+    const install = { es: ["Descarga", "Ejecuta"], en: ["Download"] };
+    expect(validateCatalog([{ ...base, install }], [])).toEqual(["Mismatched install steps for demo"]);
+  });
+
+  it("reports empty requirement items", () => {
+    const requirements = { es: [" "], en: ["Windows 11"] };
+    expect(validateCatalog([{ ...base, requirements }], [])).toEqual(["Mismatched requirements for demo"]);
+  });
+
   it("reports missing platforms", () => {
     expect(validateCatalog([{ ...base, platforms: [] }], [])).toEqual(["Missing platforms for demo"]);
   });

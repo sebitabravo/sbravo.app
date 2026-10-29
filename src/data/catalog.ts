@@ -32,6 +32,8 @@ export const site: Site = {
 //   downloadUrl: "https://github.com/sebitabravo/my-tool/releases/download/v1.0.0/my-tool-setup.exe",
 //   thumb: "/thumbs/my-tool.webp",
 //   platforms: ["Windows 11"],
+//   requirements: { es: ["Windows 10 u 11 de 64 bits"], en: ["64-bit Windows 10 or 11"] },
+//   install: { es: ["Descarga el instalador.", "Ejecútalo."], en: ["Download the installer.", "Run it."] },
 //   size: "5.0 MB",
 //   sha256: "<sha256 del archivo publicado>",
 //   virustotalUrl: "https://www.virustotal.com/gui/file/<sha256>",

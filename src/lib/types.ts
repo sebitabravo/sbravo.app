@@ -15,6 +15,10 @@ export interface App {
   /** Imagen en public/thumbs, ej. "/thumbs/my-tool.webp"; sin ella se usa el arte generado */
   thumb?: string;
   platforms: string[];
+  /** Requisitos antes de instalar, ej. "Windows 10 o 11 de 64 bits" */
+  requirements?: Localized<string[]>;
+  /** Pasos de instalación en orden; misma cantidad en ambos idiomas */
+  install?: Localized<string[]>;
   /** Tamaño legible del instalador, ej. "4.2 MB" */
   size: string;
   /** SHA-256 hex del archivo publicado; se omite hasta tener un build real */
