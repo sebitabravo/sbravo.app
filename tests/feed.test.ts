@@ -49,7 +49,8 @@ describe("buildRssFeed", () => {
   const xml = buildRssFeed({
     title: "sbravo",
     description: "Herramientas",
-    link: "https://sbravo.app/rss.xml",
+    link: "https://sbravo.app/",
+    feedUrl: "https://sbravo.app/rss.xml",
     language: "es-CL",
     entries: toFeedEntries([item], "es", origin),
   });
@@ -66,6 +67,11 @@ describe("buildRssFeed", () => {
     expect(xml).not.toContain("<pegado>");
   });
 
+  it("points the channel link at the site and the self link at the feed", () => {
+    expect(xml).toContain("<link>https://sbravo.app/</link>");
+    expect(xml).not.toContain("<link>https://sbravo.app/rss.xml</link>");
+  });
+
   it("declares the channel language and self link", () => {
     expect(xml).toContain("<language>es-CL</language>");
     expect(xml).toContain('href="https://sbravo.app/rss.xml" rel="self"');
@@ -75,7 +81,8 @@ describe("buildRssFeed", () => {
     const empty = buildRssFeed({
       title: "sbravo",
       description: "Herramientas",
-      link: "https://sbravo.app/rss.xml",
+      link: "https://sbravo.app/",
+      feedUrl: "https://sbravo.app/rss.xml",
       language: "es-CL",
       entries: [],
     });

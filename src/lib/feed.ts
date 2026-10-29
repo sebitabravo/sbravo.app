@@ -42,11 +42,14 @@ export function toFeedEntries(news: NewsItem[], locale: Locale, origin: URL): Fe
 export function buildRssFeed(options: {
   title: string;
   description: string;
+  /** página del sitio que describe el canal */
   link: string;
+  /** URL del propio feed, para atom:link rel="self" */
+  feedUrl: string;
   language: string;
   entries: FeedEntry[];
 }): string {
-  const { title, description, link, language, entries } = options;
+  const { title, description, link, feedUrl, language, entries } = options;
   const items = entries.map((entry) =>
     [
       "    <item>",
@@ -67,7 +70,7 @@ export function buildRssFeed(options: {
     `    <description>${escapeXml(description)}</description>`,
     `    <link>${escapeXml(link)}</link>`,
     `    <language>${escapeXml(language)}</language>`,
-    `    <atom:link href="${escapeXml(link)}" rel="self" type="application/rss+xml" />`,
+    `    <atom:link href="${escapeXml(feedUrl)}" rel="self" type="application/rss+xml" />`,
     ...items,
     "  </channel>",
     "</rss>",
