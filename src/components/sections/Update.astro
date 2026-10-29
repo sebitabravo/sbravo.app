@@ -14,25 +14,22 @@ const t = useTranslations(locale);
 ---
 
 <section class="section-y" aria-labelledby="update-title">
-  <div
-    class:list={[
-      "shell grid grid-cols-1 gap-11",
-      site.supportUrl && "md:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] md:items-center md:gap-[8vw]",
-    ]}
-  >
-    <div data-reveal>
-      <p class="eyebrow">{t("update.eyebrow")}</p>
-      <h2 id="update-title" class="mt-4 max-w-[12ch] text-section">
-        {t("update.title.1")} <span class="grad-text">{t("update.title.2")}</span>
-      </h2>
-      <p class="mt-6 mb-3.5 max-w-[58ch] text-muted">{site.updateNote[locale]}</p>
-      <p class="font-mono text-xs text-muted">
-        {t("hero.updated")}{" "}
-        <time class="text-fg tabular-nums" datetime={site.updated}>{formatDate(site.updated, dateLocale[locale])}</time>
-      </p>
-    </div>
-    {
-      site.supportUrl && (
+  {
+    site.supportUrl ? (
+      <div class="shell grid grid-cols-1 gap-11 md:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] md:items-center md:gap-[8vw]">
+        <div data-reveal>
+          <p class="eyebrow">{t("update.eyebrow")}</p>
+          <h2 id="update-title" class="mt-4 max-w-[12ch] text-section">
+            {t("update.title.1")} <span class="grad-text">{t("update.title.2")}</span>
+          </h2>
+          <p class="mt-6 mb-3.5 max-w-[58ch] text-muted">{site.updateNote[locale]}</p>
+          <p class="font-mono text-xs text-muted">
+            {t("hero.updated")}{" "}
+            <time class="text-fg tabular-nums" datetime={site.updated}>
+              {formatDate(site.updated, dateLocale[locale])}
+            </time>
+          </p>
+        </div>
         <aside
           id="support"
           class="relative isolate min-w-0 scroll-mt-24 overflow-hidden rounded-card border border-line bg-surface p-[clamp(24px,5vw,42px)]"
@@ -50,7 +47,29 @@ const t = useTranslations(locale);
             {t("hero.support")} <Arrow class="size-4" />
           </a>
         </aside>
-      )
-    }
-  </div>
+      </div>
+    ) : (
+      // sin bloque de apoyo la nota queda sola: en banda compacta no deja un viewport vacío
+      <div class="shell">
+        <div
+          class="flex flex-col gap-6 rounded-card border border-line bg-surface p-[clamp(22px,5vw,42px)] sm:flex-row sm:items-center sm:justify-between sm:gap-10"
+          data-reveal
+        >
+          <div class="max-w-[58ch]">
+            <p class="eyebrow">{t("update.eyebrow")}</p>
+            <h2 id="update-title" class="mt-3 text-[clamp(24px,3vw,34px)]">
+              {t("update.title.1")} <span class="grad-text">{t("update.title.2")}</span>
+            </h2>
+            <p class="mt-3.5 text-sm text-muted">{site.updateNote[locale]}</p>
+          </div>
+          <div class="shrink-0 sm:text-right">
+            <p class="eyebrow">{t("hero.updated")}</p>
+            <time class="mt-2 block font-mono text-lg text-fg tabular-nums" datetime={site.updated}>
+              {formatDate(site.updated, dateLocale[locale])}
+            </time>
+          </div>
+        </div>
+      </div>
+    )
+  }
 </section>

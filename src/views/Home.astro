@@ -5,6 +5,7 @@ import Header from "../components/Header.astro";
 import Hero from "../components/Hero.astro";
 import Ticker from "../components/sections/Ticker.astro";
 import Catalog from "../components/sections/Catalog.astro";
+import About from "../components/sections/About.astro";
 import Update from "../components/sections/Update.astro";
 import Socials from "../components/sections/Socials.astro";
 import News from "../components/sections/News.astro";
@@ -31,8 +32,9 @@ const jsonLd = { "@context": "https://schema.org", "@type": "WebSite", name: sit
   <main id="main" tabindex="-1">
     <Hero />
     <Ticker text={site.ticker[locale]} />
-    <Notice text={site.notice[locale]} />
+    {apps.length > 0 && <Notice text={site.notice[locale]} />}
     <Catalog apps={sortedApps} />
+    <About />
     <Update site={site} />
     {socials.length > 0 && <Socials socials={socials} />}
     <News news={sortedNews} />

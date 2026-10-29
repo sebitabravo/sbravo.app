@@ -10,6 +10,7 @@ const basePath = stripLocale(Astro.url.pathname);
 
 const links = [
   { label: t("nav.catalog"), href: `${home}#catalog` },
+  { label: t("nav.about"), href: `${home}#about` },
   ...(news.length > 0 ? [{ label: t("nav.updates"), href: `${home}#news` }] : []),
   ...(site.supportUrl ? [{ label: t("nav.support"), href: `${home}#support` }] : []),
 ];

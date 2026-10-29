@@ -61,7 +61,7 @@ const monogram = [...new Intl.Segmenter().segment(app.title.trim())][0]?.segment
     <div
       class="flex items-center justify-between gap-3 border-b border-line pb-4 text-xs text-muted max-sm:flex-col max-sm:items-start max-sm:gap-1"
     >
-      <span class="min-w-0 wrap-anywhere">{t("card.by")} {app.author} &middot; {platforms} &middot; {app.size}</span>
+      <span class="min-w-0 wrap-anywhere">{platforms} &middot; {app.size}</span>
       <time class="shrink-0 tabular-nums" datetime={app.uploaded}>{formatDate(app.uploaded, dateLocale[locale])}</time>
     </div>
     <div class="flex items-center justify-between gap-3 pt-4">
@@ -71,15 +71,27 @@ const monogram = [...new Intl.Segmenter().segment(app.title.trim())][0]?.segment
       >
         {app.category[locale]}
       </span>
-      <a
-        class="group/link inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold text-fg after:absolute after:inset-0 after:z-30 after:content-['']"
-        href={localePath(locale, `/apps/${app.slug}/`)}
-      >
-        {t("card.explore")} <span class="sr-only">{app.title}</span>
-        <Arrow
-          class="app-card__accent size-4.5 transition-transform duration-200 group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5"
-        />
-      </a>
+      <div class="flex shrink-0 items-center gap-4">
+        {
+          app.platforms.length === 1 && (
+            <a
+              class="app-card__accent relative z-40 inline-flex min-h-11 items-center gap-1.5 text-sm font-semibold"
+              href={app.downloadUrl}
+            >
+              {t("card.download")}
+            </a>
+          )
+        }
+        <a
+          class="group/link inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold text-fg after:absolute after:inset-0 after:z-30 after:content-['']"
+          href={localePath(locale, `/apps/${app.slug}/`)}
+        >
+          {t("card.explore")} <span class="sr-only">{app.title}</span>
+          <Arrow
+            class="app-card__accent size-4.5 transition-transform duration-200 group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5"
+          />
+        </a>
+      </div>
     </div>
   </div>
 </article>
