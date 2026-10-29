@@ -60,7 +60,7 @@ function applyScrollMotion(): void {
       {
         opacity: 1,
         y: 0,
-        duration: 0.8,
+        duration: 0.62,
         ease: "power2.out",
         scrollTrigger: { trigger: element, start: "top 91%", once: true },
       },
@@ -76,7 +76,7 @@ function applyScrollMotion(): void {
       {
         yPercent: 0,
         opacity: 1,
-        duration: 0.7,
+        duration: 0.56,
         stagger: 0.045,
         ease: "power3.out",
         scrollTrigger: { trigger: heading, start: "top 92%", once: true },

@@ -11,7 +11,7 @@ const toolCount =
 
 <section id="top" class="hero group relative isolate grid min-h-svh grid-rows-[1fr_auto] overflow-hidden" data-hero>
   <div class="hero__stage absolute inset-0 -z-10" aria-hidden="true">
-    <div class="hero__fallback absolute inset-0 opacity-0 transition-opacity duration-600 group-[.no-webgl]:opacity-100"></div>
+    <div class="hero__fallback absolute inset-0 opacity-0 transition-opacity duration-300 group-[.no-webgl]:opacity-100"></div>
     <canvas class="hero__canvas block h-full w-full group-[.no-webgl]:hidden"></canvas>
     <div class="hero__veil pointer-events-none absolute inset-0"></div>
   </div>
@@ -104,6 +104,34 @@ const toolCount =
   const canvas = hero.querySelector<HTMLCanvasElement>(".hero__canvas")!;
   const stage = hero.querySelector<HTMLElement>(".hero__stage")!;
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // el escenario se apaga a medida que se sale del hero, para que el corte al ticker no sea seco
+  let heroHeight = hero.offsetHeight;
+  const fadeStage = () => {
+    const progress = Math.min(window.scrollY / Math.max(heroHeight, 1), 1);
+    // ease-in: el orbe se mantiene arriba y recién se apaga al acercarse al borde
+    stage.style.opacity = String(1 - progress * progress * 0.85);
+  };
+  if (!reduced) {
+    let fadeFrame = 0;
+    const scheduleFade = () => {
+      if (fadeFrame) return;
+      fadeFrame = requestAnimationFrame(() => {
+        fadeFrame = 0;
+        fadeStage();
+      });
+    };
+    window.addEventListener("scroll", scheduleFade, { passive: true });
+    window.addEventListener(
+      "resize",
+      () => {
+        heroHeight = hero.offsetHeight;
+        scheduleFade();
+      },
+      { passive: true },
+    );
+    fadeStage();
+  }
 
   const hasWebGL = (() => {
     try {
