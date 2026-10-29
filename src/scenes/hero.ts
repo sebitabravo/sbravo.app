@@ -54,7 +54,8 @@ const blobFragment = /* glsl */ `
     vec3 cyan = vec3(0.0, 0.83, 1.0);
     vec3 pink = vec3(1.0, 0.3, 0.55);
     float t = sin(vNoise * 2.4 + fresnel * 3.0 + uTime * 0.25) * 0.5 + 0.5;
-    vec3 irid = mix(mix(violet, cyan, t), pink, smoothstep(0.55, 1.0, vNoise * 0.5 + 0.5) * 0.6);
+    // el rosa queda como acento mínimo: sin él la iridiscencia se lee violeta/cian pura
+    vec3 irid = mix(mix(violet, cyan, t), pink, smoothstep(0.55, 1.0, vNoise * 0.5 + 0.5) * 0.22);
     vec3 base = vec3(0.02, 0.015, 0.05);
     vec3 color = mix(base, irid, 0.12 + fresnel * 0.95);
     color += cyan * pow(fresnel, 5.0) * 0.6;

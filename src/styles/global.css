@@ -151,12 +151,12 @@
 }
 
 @utility btn-primary {
-  background: var(--grad);
+  background: var(--color-fg);
   border-color: transparent;
   color: var(--color-ink);
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: var(--grad);
+      background: #fff;
       transform: translateY(-2px);
     }
   }

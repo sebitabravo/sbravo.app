@@ -135,39 +135,6 @@ function applyScrollMotion(): void {
   });
 
   if (finePointer.matches) {
-    document.querySelectorAll<HTMLElement>("[data-app-card]").forEach((card) => {
-      const glare = card.querySelector<HTMLElement>(".app-card__glare");
-      card.addEventListener("pointermove", (event) => {
-        const bounds = card.getBoundingClientRect();
-        const x = event.clientX - bounds.left;
-        const y = event.clientY - bounds.top;
-        const rotateX = ((y / bounds.height) - 0.5) * -7;
-        const rotateY = ((x / bounds.width) - 0.5) * 7;
-
-        // mover la capa con transform evita repintar el gradiente en cada pointermove
-        if (glare) glare.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-        gsap.to(card, {
-          rotateX,
-          rotateY,
-          y: -5,
-          duration: 0.35,
-          ease: "power2.out",
-          overwrite: true,
-          transformPerspective: 900,
-        });
-      });
-      card.addEventListener("pointerleave", () => {
-        gsap.to(card, {
-          rotateX: 0,
-          rotateY: 0,
-          y: 0,
-          duration: 0.45,
-          ease: "power2.out",
-          overwrite: true,
-        });
-      });
-    });
-
     document.querySelectorAll<HTMLElement>("[data-magnetic]").forEach((link) => {
       const moveX = gsap.quickTo(link, "x", { duration: 0.2, ease: "power2.out" });
       const moveY = gsap.quickTo(link, "y", { duration: 0.2, ease: "power2.out" });

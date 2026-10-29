@@ -18,7 +18,7 @@ const facts = [
     <div data-reveal>
       <p class="eyebrow">{t("about.eyebrow")}</p>
       <h2 id="about-title" class="mt-4 max-w-[16ch] text-section">
-        {t("about.title.1")} <span class="grad-text">{t("about.title.2")}</span>
+        {t("about.title.1")} {t("about.title.2")}
       </h2>
       <p class="mt-6 max-w-[54ch] text-muted">{t("about.body.1")}</p>
       <p class="mt-4 max-w-[54ch] text-muted">{t("about.body.2")}</p>
@@ -30,15 +30,7 @@ const facts = [
         )
       }
     </div>
-    <aside
-      class="relative isolate min-w-0 overflow-hidden rounded-card border border-line bg-surface p-[clamp(24px,4vw,40px)]"
-      data-reveal
-    >
-      <span
-        class="absolute -top-16 -right-14 -z-10 aspect-square w-55 rounded-full border border-cyan/20 shadow-[inset_0_0_60px_rgb(124_92_255/0.12)]"
-        data-parallax
-        aria-hidden="true"
-      />
+    <aside class="relative isolate min-w-0 overflow-hidden rounded-card border border-line bg-surface p-[clamp(24px,4vw,40px)]" data-reveal>
       <Logo wordmark class="text-[clamp(26px,3vw,36px)]" title="" />
       <dl class="mt-8 grid gap-5 border-t border-line pt-6">
         {

@@ -62,6 +62,14 @@ const toolCount =
       linear-gradient(90deg, var(--color-ink) 0%, transparent 55%),
       linear-gradient(0deg, var(--color-ink), transparent 30%);
   }
+  /* en pantallas angostas el orbe queda detrás del texto: se apaga antes de llegar al titular */
+  @media (max-width: 640px) {
+    .hero__veil {
+      background:
+        linear-gradient(90deg, var(--color-ink) 0%, transparent 70%),
+        linear-gradient(180deg, transparent 0%, rgb(6 6 10 / 0.72) 26%, var(--color-ink) 52%);
+    }
+  }
   .hero__drip {
     animation: drip 1.8s ease-in-out infinite;
   }

@@ -19,18 +19,11 @@ const monogram = [...new Intl.Segmenter().segment(app.title.trim())][0]?.segment
 ---
 
 <article
-  class="app-card group/card relative min-w-0 overflow-hidden rounded-card border border-line bg-surface transition-[border-color,box-shadow] duration-200 transform-3d focus-within:border-(--app-accent)/45 hover:border-(--app-accent)/45 hover:shadow-[0_18px_50px_-12px] hover:shadow-(--app-accent)/25 active:scale-[0.99]"
+  class="app-card group/card relative min-w-0 overflow-hidden rounded-card border border-line bg-surface transition-colors duration-200 focus-within:border-(--app-accent)/45 hover:border-(--app-accent)/45 active:scale-[0.99]"
   style={`--app-accent: ${app.accent}`}
-  data-app-card
   data-reveal
 >
-  <div
-    class="app-card__glare pointer-events-none absolute -top-32.5 -left-32.5 z-10 size-65 opacity-0 transition-opacity duration-250 group-hover/card:opacity-100"
-  >
-  </div>
   <div class="app-card__art relative grid min-h-39 place-items-center overflow-hidden border-b border-line" aria-hidden="true">
-    <div class="app-card__blob absolute aspect-square w-28 -rotate-20 border border-(--app-accent)/55"></div>
-    <div class="app-card__blob absolute aspect-square w-39 rotate-35 border border-(--app-accent)/25"></div>
     {
       app.thumb ? (
         <img
@@ -97,18 +90,11 @@ const monogram = [...new Intl.Segmenter().segment(app.title.trim())][0]?.segment
 </article>
 
 <style>
-  /* gradientes que dependen de --app-accent; motion.ts mueve el glare con transform */
-  .app-card__glare {
-    background: radial-gradient(circle, color-mix(in srgb, var(--app-accent) 20%, transparent), transparent 72%);
-  }
+  /* el arte depende de --app-accent, que llega por estilo inline desde el catálogo */
   .app-card__art {
     background:
-      radial-gradient(50% 80% at 50% 100%, color-mix(in srgb, var(--app-accent) 22%, transparent), transparent),
-      linear-gradient(135deg, rgb(255 255 255 / 0.035), transparent 65%);
-  }
-  .app-card__blob {
-    border-radius: 30% 70% 58% 42% / 42% 38% 62% 58%;
-    box-shadow: inset 0 0 32px color-mix(in srgb, var(--app-accent) 15%, transparent);
+      radial-gradient(50% 80% at 50% 100%, color-mix(in srgb, var(--app-accent) 18%, transparent), transparent),
+      linear-gradient(135deg, rgb(255 255 255 / 0.03), transparent 65%);
   }
   /* aclarar el acento asegura 4.5:1 sobre surface incluso con violeta */
   .app-card__accent {
