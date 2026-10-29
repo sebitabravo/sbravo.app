@@ -24,12 +24,3 @@ hero cae a un degradado estático cuando no hay WebGL.
 | Sobre el autor | Vista móvil |
 |---|---|
 | ![Sección con la explicación del proyecto y sus principios](docs/screenshots/about.webp) | ![Portada en un teléfono de 390 px](docs/screenshots/mobile.webp) |
-
-## Stack
-
-- **Framework:** Astro 7 con salida estática y ruteo i18n integrado
-- **Estilos:** Tailwind CSS 4 con tokens de diseño en `src/styles/global.css`
-- **3D y movimiento:** three.js 0.186 para la escena del hero, GSAP 3 y Lenis para el scroll
-- **Lenguaje:** TypeScript en modo estricto
-- **Tests:** Vitest sobre catálogo, i18n y feed RSS
-- **Contenido:** catálogo tipado en `src/data/catalog.ts`, validado en cada build
