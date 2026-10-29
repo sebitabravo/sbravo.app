@@ -1,0 +1,188 @@
+---
+import { apps, site } from "../data/catalog";
+import { formatDate } from "../lib/catalog";
+---
+
+<section class="hero" data-hero>
+  <div class="hero__stage" aria-hidden="true">
+    <div class="hero__fallback"></div>
+    <canvas class="hero__canvas"></canvas>
+  </div>
+
+  <div class="hero__content container">
+    <p class="eyebrow hero__line">Free software hub &middot; {apps.length} tools</p>
+    <h1 class="hero__title">
+      <span class="hero__mask"><span class="hero__word">Tools that</span></span>
+      <span class="hero__mask"><span class="hero__word">feel like</span></span>
+      <span class="hero__mask"><span class="hero__word grad-text">magic.</span></span>
+    </h1>
+    <p class="hero__lead hero__line">{site.tagline} Lightweight apps, honest changelogs, zero bloat.</p>
+    <div class="hero__actions hero__line">
+      <a class="btn btn--primary" href="#catalog">Browse catalog</a>
+      <a class="btn" href={site.supportUrl}>Support the project</a>
+    </div>
+  </div>
+
+  <div class="hero__meta container hero__line">
+    <span class="eyebrow">Last update &middot; {formatDate(site.updated)}</span>
+    <span class="eyebrow hero__scroll">Scroll <i aria-hidden="true"></i></span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .hero__stage {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero__canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  /* se muestra cuando no hay WebGL o con reduced motion */
+  .hero__fallback {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    background:
+      radial-gradient(40% 45% at 70% 45%, rgba(124, 92, 255, 0.45), transparent 70%),
+      radial-gradient(30% 35% at 62% 58%, rgba(0, 212, 255, 0.35), transparent 70%);
+    transition: opacity 0.6s;
+  }
+  .hero.no-webgl .hero__fallback {
+    opacity: 1;
+  }
+  .hero.no-webgl .hero__canvas {
+    display: none;
+  }
+  .hero__stage::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, var(--bg) 0%, transparent 55%), linear-gradient(0deg, var(--bg), transparent 30%);
+    pointer-events: none;
+  }
+  .hero__content {
+    align-self: center;
+    padding-top: 96px;
+  }
+  .hero__title {
+    font-size: clamp(44px, 9.5vw, 148px);
+    margin: 20px 0 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .hero__mask {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.06em;
+  }
+  .hero__word {
+    display: inline-block;
+  }
+  .hero__lead {
+    color: var(--muted);
+    font-size: clamp(16px, 1.6vw, 20px);
+    max-width: 44ch;
+    margin: 0 0 36px;
+  }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .hero__meta {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 28px;
+  }
+  .hero__scroll {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero__scroll i {
+    width: 1px;
+    height: 32px;
+    background: linear-gradient(var(--text), transparent);
+    animation: drip 1.8s ease-in-out infinite;
+  }
+  @keyframes drip {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    50% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    51% {
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+  /* estado inicial antes del reveal; sin JS el contenido queda visible */
+  :global(body.is-loading) .hero__word {
+    transform: translateY(110%);
+  }
+  :global(body.is-loading) .hero__line {
+    opacity: 0;
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const hero = document.querySelector<HTMLElement>("[data-hero]")!;
+  const canvas = hero.querySelector<HTMLCanvasElement>(".hero__canvas")!;
+  const stage = hero.querySelector<HTMLElement>(".hero__stage")!;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const hasWebGL = (() => {
+    try {
+      return !!document.createElement("canvas").getContext("webgl2");
+    } catch {
+      return false;
+    }
+  })();
+
+  let playIntro: ((duration?: number) => Promise<void>) | undefined;
+
+  if (hasWebGL && !reduced) {
+    // three.js se carga en un chunk aparte para no bloquear el primer render
+    import("../scenes/hero").then(({ initHero }) => {
+      const sceneApi = initHero(canvas, stage);
+      playIntro = sceneApi.playIntro;
+      window.addEventListener("pagehide", () => sceneApi.dispose(), { once: true });
+      (window as Window & { __heroReady?: boolean }).__heroReady = true;
+      window.dispatchEvent(new CustomEvent("hero:ready"));
+    });
+  } else {
+    hero.classList.add("no-webgl");
+  }
+
+  window.addEventListener(
+    "intro:open",
+    () => {
+      playIntro?.(2.6);
+      if (reduced) return;
+      gsap
+        .timeline({ delay: 0.35 })
+        .to(".hero__word", { y: 0, duration: 1.2, ease: "expo.out", stagger: 0.1 })
+        .to(".hero__line", { opacity: 1, duration: 0.9, ease: "power2.out", stagger: 0.08 }, "-=0.8");
+    },
+    { once: true },
+  );
+</script>

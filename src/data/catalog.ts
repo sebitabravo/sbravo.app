@@ -1,0 +1,130 @@
+// Contenido editable del sitio. Todo es placeholder ficticio: reemplazar por proyectos propios.
+import type { App, NewsItem, Social, Site } from "../lib/types";
+
+export const site: Site = {
+  name: "SBRAVO",
+  tagline: "Free tools, crafted with care.",
+  ticker: "Leave a comment · Support the project · New builds every month · Open source when possible",
+  supportUrl: "#support",
+  notice: "Some mirrors may be slow during peak hours. If a download fails, retry in a few minutes.",
+  updated: "2026-10-28",
+  updateNote:
+    "New catalog design, faster downloads and changelogs per release. Thanks to everyone sending feedback.",
+};
+
+export const apps: App[] = [
+  {
+    slug: "wintune",
+    title: "WinTune",
+    version: "1.4.0",
+    description: "Windows performance tuner with safe, reversible presets for gaming and low-latency setups.",
+    author: "sbravo",
+    uploaded: "2026-10-20",
+    category: "Utility",
+    accent: "#7c5cff",
+    downloadUrl: "#",
+    platforms: ["Windows 10", "Windows 11"],
+    size: "6.8 MB",
+  },
+  {
+    slug: "pixelforge",
+    title: "PixelForge",
+    version: "2.1.3",
+    description: "Batch image converter and optimizer with WebP and AVIF output.",
+    author: "sbravo",
+    uploaded: "2026-09-14",
+    category: "Media",
+    accent: "#00d4ff",
+    downloadUrl: "#",
+    platforms: ["Windows", "macOS", "Linux"],
+    size: "18.4 MB",
+  },
+  {
+    slug: "clipnote",
+    title: "ClipNote",
+    version: "0.9.1",
+    description: "Clipboard history with tags, search and encrypted local storage.",
+    author: "sbravo",
+    uploaded: "2026-10-02",
+    category: "Productivity",
+    accent: "#ff4d8d",
+    downloadUrl: "#",
+    platforms: ["Windows", "macOS"],
+    size: "9.1 MB",
+  },
+  {
+    slug: "netpulse",
+    title: "NetPulse",
+    version: "1.0.0",
+    description: "Live latency and packet-loss monitor with per-app breakdown.",
+    author: "sbravo",
+    uploaded: "2026-08-30",
+    category: "Network",
+    accent: "#2bff88",
+    downloadUrl: "#",
+    platforms: ["Windows"],
+    size: "3.2 MB",
+  },
+  {
+    slug: "fontbox",
+    title: "FontBox",
+    version: "1.2.0",
+    description: "Preview, compare and organize local fonts without installing them.",
+    author: "sbravo",
+    uploaded: "2026-07-18",
+    category: "Design",
+    accent: "#ffb547",
+    downloadUrl: "#",
+    platforms: ["Windows", "macOS"],
+    size: "12.6 MB",
+  },
+  {
+    slug: "drivescope",
+    title: "DriveScope",
+    version: "3.0.2",
+    description: "Disk usage visualizer with treemaps and duplicate finder.",
+    author: "sbravo",
+    uploaded: "2026-10-11",
+    category: "Utility",
+    accent: "#5cffe1",
+    downloadUrl: "#",
+    platforms: ["Windows", "Linux"],
+    size: "7.5 MB",
+  },
+];
+
+export const news: NewsItem[] = [
+  {
+    date: "2026-10-20",
+    app: "wintune",
+    version: "1.4.0",
+    title: "WinTune 1.4 released",
+    summary: "New latency preset and one-click restore point.",
+  },
+  {
+    date: "2026-10-11",
+    app: "drivescope",
+    version: "3.0.2",
+    title: "DriveScope 3.0.2 hotfix",
+    summary: "Fixes a crash when scanning network drives.",
+  },
+  {
+    date: "2026-10-02",
+    app: "clipnote",
+    version: "0.9.1",
+    title: "ClipNote beta update",
+    summary: "Tag filters and faster search on large histories.",
+  },
+  {
+    date: "2026-09-14",
+    app: "pixelforge",
+    version: "2.1.3",
+    title: "PixelForge 2.1.3",
+    summary: "AVIF encoder is now twice as fast.",
+  },
+];
+
+export const socials: Social[] = [
+  { label: "YouTube", handle: "@your-channel", url: "#" },
+  { label: "Community", handle: "Join the group", url: "#" },
+];

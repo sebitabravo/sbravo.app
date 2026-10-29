@@ -1,0 +1,158 @@
+---
+import { site } from "../data/catalog";
+
+const letters = site.name.split("");
+---
+
+<div class="intro" data-intro aria-hidden="true">
+  <div class="intro__panel intro__panel--top"></div>
+  <div class="intro__panel intro__panel--bottom"></div>
+  <div class="intro__center">
+    <div class="intro__word">
+      {letters.map((letter) => <span class="intro__letter">{letter}</span>)}
+    </div>
+    <div class="intro__bar"><i></i></div>
+  </div>
+  <span class="intro__count eyebrow">000</span>
+  <span class="intro__label eyebrow">Loading experience</span>
+</div>
+
+<noscript>
+  <style>
+    .intro {
+      display: none !important;
+    }
+    body.is-loading {
+      overflow: auto !important;
+    }
+    .hero__word {
+      transform: none !important;
+    }
+    .hero__line {
+      opacity: 1 !important;
+    }
+  </style>
+</noscript>
+
+<style>
+  .intro {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    pointer-events: none;
+  }
+  .intro__panel {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 50.5%;
+    background: var(--bg);
+  }
+  .intro__panel--top {
+    top: 0;
+  }
+  .intro__panel--bottom {
+    bottom: 0;
+  }
+  .intro__center {
+    position: relative;
+    display: grid;
+    gap: 20px;
+    justify-items: center;
+  }
+  .intro__word {
+    display: flex;
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(40px, 10vw, 120px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+  }
+  .intro__letter {
+    display: inline-block;
+    transform: translateY(105%);
+    background: var(--grad);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .intro__bar {
+    width: min(240px, 60vw);
+    height: 1px;
+    background: var(--line);
+    overflow: hidden;
+  }
+  .intro__bar i {
+    display: block;
+    height: 100%;
+    background: var(--grad);
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+  .intro__count,
+  .intro__label {
+    position: absolute;
+    bottom: 28px;
+    font-variant-numeric: tabular-nums;
+  }
+  .intro__count {
+    right: var(--gutter);
+    font-size: 14px;
+    color: var(--text);
+  }
+  .intro__label {
+    left: var(--gutter);
+  }
+</style>
+
+<script>
+  import { gsap } from "gsap";
+
+  const root = document.querySelector<HTMLElement>("[data-intro]")!;
+  const count = root.querySelector<HTMLElement>(".intro__count")!;
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // al recargar, Chrome restaura el scroll y el intro terminaría revelando la mitad de la página
+  history.scrollRestoration = "manual";
+  window.scrollTo(0, 0);
+
+  const finish = () => {
+    root.remove();
+    document.body.classList.remove("is-loading");
+    window.dispatchEvent(new CustomEvent("intro:done"));
+  };
+
+  // espera a que three.js esté listo, con tope para conexiones lentas o sin WebGL
+  const heroReady = new Promise<void>((resolve) => {
+    if ((window as Window & { __heroReady?: boolean }).__heroReady) return resolve();
+    window.addEventListener("hero:ready", () => resolve(), { once: true });
+    setTimeout(resolve, 3500);
+  });
+
+  if (reduced) {
+    window.dispatchEvent(new CustomEvent("intro:open"));
+    finish();
+  } else {
+    const progress = { value: 0 };
+    const render = () => (count.textContent = String(Math.round(progress.value)).padStart(3, "0"));
+
+    gsap.to(".intro__letter", { y: 0, duration: 1, ease: "expo.out", stagger: 0.06, delay: 0.15 });
+    const loading = gsap.to(progress, { value: 85, duration: 1.8, ease: "power2.inOut", onUpdate: render });
+    gsap.to(".intro__bar i", { scaleX: 0.85, duration: 1.8, ease: "power2.inOut" });
+
+    Promise.all([heroReady, document.fonts.ready, loading.then()]).then(() => {
+      gsap
+        .timeline({ onComplete: finish })
+        .to(progress, { value: 100, duration: 0.45, ease: "power1.out", onUpdate: render })
+        .to(".intro__bar i", { scaleX: 1, duration: 0.45, ease: "power1.out" }, "<")
+        .to(".intro__letter", { y: "-105%", duration: 0.7, ease: "expo.in", stagger: 0.04 })
+        .to([".intro__count", ".intro__label", ".intro__bar"], { opacity: 0, duration: 0.3 }, "<")
+        .add(() => window.dispatchEvent(new CustomEvent("intro:open")))
+        .to(".intro__panel--top", { yPercent: -100, duration: 1.2, ease: "expo.inOut" })
+        .to(".intro__panel--bottom", { yPercent: 100, duration: 1.2, ease: "expo.inOut" }, "<");
+    });
+  }
+</script>

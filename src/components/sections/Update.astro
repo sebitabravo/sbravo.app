@@ -1,0 +1,98 @@
+---
+import type { Site } from "../../lib/types";
+import { formatDate } from "../../lib/catalog";
+
+interface Props {
+  site: Site;
+}
+
+const { site } = Astro.props;
+---
+
+<section class="update section" aria-labelledby="update-title">
+  <div class="container update__layout">
+    <div class="update__copy" data-reveal>
+      <p class="eyebrow">A note from the maker</p>
+      <h2 id="update-title">Good things <span class="grad-text">keep moving.</span></h2>
+      <p class="update__note">{site.updateNote}</p>
+      <p class="update__date">Last updated <time datetime={site.updated}>{formatDate(site.updated)}</time></p>
+    </div>
+    <aside class="update__support" data-reveal>
+      <span class="update__orbit" data-parallax aria-hidden="true"></span>
+      <p class="eyebrow">Independent by design</p>
+      <h3>Built with care. Kept alive by you.</h3>
+      <p>Support helps keep these tools free, maintained, and moving forward.</p>
+      <a class="btn btn--primary" id="support" href={site.supportUrl}>
+        Support the project <span aria-hidden="true">↗</span>
+      </a>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .update__layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 44px;
+  }
+  .update__copy h2 {
+    max-width: 12ch;
+    margin-top: 16px;
+    font-size: clamp(36px, 7vw, 76px);
+  }
+  .update__note {
+    max-width: 58ch;
+    margin: 24px 0 14px;
+    color: var(--muted);
+  }
+  .update__date {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 11px;
+  }
+  .update__date time {
+    color: var(--text);
+  }
+  .update__support {
+    position: relative;
+    min-width: 0;
+    overflow: hidden;
+    padding: clamp(24px, 5vw, 42px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--bg-elev);
+    isolation: isolate;
+  }
+  .update__orbit {
+    position: absolute;
+    z-index: -1;
+    top: -45px;
+    right: -40px;
+    width: 190px;
+    aspect-ratio: 1;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 50%;
+    box-shadow: 0 0 80px rgba(0, 212, 255, 0.09), inset 0 0 50px rgba(124, 92, 255, 0.1);
+  }
+  .update__support h3 {
+    max-width: 14ch;
+    margin-top: 20px;
+    font-size: clamp(25px, 3vw, 34px);
+  }
+  .update__support > p:not(.eyebrow) {
+    max-width: 38ch;
+    margin: 16px 0 26px;
+    color: var(--muted);
+    font-size: 14px;
+  }
+  .update__support .btn {
+    min-height: 48px;
+  }
+  @media (min-width: 860px) {
+    .update__layout {
+      grid-template-columns: minmax(0, 1.2fr) minmax(300px, 0.8fr);
+      align-items: center;
+      gap: 8vw;
+    }
+  }
+</style>
