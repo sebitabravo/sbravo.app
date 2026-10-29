@@ -3,12 +3,15 @@ import type { NewsItem } from "../../lib/types";
 import { formatDate, versionAnchor } from "../../lib/catalog";
 import { splitWords } from "../../scripts/split";
 import Arrow from "../icons/Arrow.astro";
+import { dateLocale, localePath, toLocale, useTranslations } from "../../i18n/ui";
 
 interface Props {
   news: NewsItem[];
 }
 
 const { news } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 ---
 
 {
@@ -18,42 +21,42 @@ const { news } = Astro.props;
       class="section-y bg-linear-to-b from-transparent via-white/2 to-transparent"
       aria-labelledby="news-title"
     >
-      <div class="shell min-[860px]:grid min-[860px]:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] min-[860px]:items-start min-[860px]:gap-[9vw]">
-        <div class="mb-8.5 min-[860px]:sticky min-[860px]:top-[18vh] min-[860px]:mb-0" data-reveal>
-          <p class="eyebrow">Fresh from the workshop</p>
-          <h2 id="news-title" class="mt-3.5 text-[clamp(34px,6vw,64px)]">
-            Latest <span class="grad-text">updates.</span>
+      <div class="shell md:grid md:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] md:items-start md:gap-[9vw]">
+        <div class="mb-8.5 md:sticky md:top-[18vh] md:mb-0" data-reveal>
+          <p class="eyebrow">{t("news.eyebrow")}</p>
+          <h2 id="news-title" class="mt-4 text-section">
+            {t("news.title.1")} <span class="grad-text">{t("news.title.2")}</span>
           </h2>
-          <p class="mt-4 max-w-[38ch] text-muted">New releases, fixes, and small details worth knowing.</p>
+          <p class="mt-4 max-w-[38ch] text-muted">{t("news.lead")}</p>
         </div>
         <ol class="news__timeline relative grid pl-4.75">
           {news.map((item) => (
             <li class="relative min-w-0 pb-7.5 pl-4.25" data-reveal>
               <span
-                class="absolute top-1 -left-4.75 size-2.25 rounded-full border-2 border-cyan bg-ink shadow-[0_0_16px_rgb(0_212_255/0.55)]"
+                class="absolute top-1 -left-4.75 size-2.25 rounded-full border-2 border-cyan bg-ink shadow-[0_2px_12px_rgb(0_212_255/0.45)]"
                 aria-hidden="true"
               />
               <time
-                class="font-mono text-[10px] tracking-[0.08em] text-muted uppercase tabular-nums"
+                class="font-mono text-xs tracking-[0.08em] text-muted uppercase tabular-nums"
                 datetime={item.date}
               >
-                {formatDate(item.date)}
+                {formatDate(item.date, dateLocale[locale])}
               </time>
               <a
                 class="group/news mt-2 block wrap-anywhere"
-                href={`/apps/${item.app}#${versionAnchor(item.version)}`}
+                href={`${localePath(locale, `/apps/${item.app}/`)}#${versionAnchor(item.version)}`}
               >
                 <h3
-                  class="inline-block text-[clamp(17px,2.2vw,21px)] transition-colors group-hover/news:text-cyan"
+                  class="inline-block text-card transition-colors group-hover/news:text-cyan"
                   data-split
                 >
-                  {splitWords(item.title).map((token) =>
+                  {splitWords(item.title[locale]).map((token) =>
                     /^\s+$/u.test(token) ? token : <span class="inline-block">{token}</span>
                   )}
                 </h3>
-                <p class="mt-2 mb-2.5 text-[13px] leading-[1.55] text-muted">{item.summary}</p>
-                <span class="inline-flex min-h-8 items-center gap-1.75 font-mono text-[10px] text-fg">
-                  Version {item.version} <Arrow class="size-3.5 text-cyan" />
+                <p class="mt-2 mb-2.5 text-[13px] leading-[1.55] text-muted">{item.summary[locale]}</p>
+                <span class="inline-flex min-h-8 items-center gap-1.75 font-mono text-xs text-fg">
+                  {t("news.version")} {item.version} <Arrow class="size-3.5 text-cyan" />
                 </span>
               </a>
             </li>

@@ -4,29 +4,64 @@ import "@fontsource-variable/unbounded";
 import "@fontsource-variable/jetbrains-mono";
 import "../styles/global.css";
 import { site } from "../data/catalog";
+import { dateLocale, localePath, locales, stripLocale, toLocale, useTranslations } from "../i18n/ui";
 
 interface Props {
   title?: string;
   description?: string;
   /** activa el estado de carga que usa el intro animado */
   intro?: boolean;
+  noindex?: boolean;
 }
 
-const { title = `${site.name} - ${site.tagline}`, description = site.tagline, intro = false } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const { title = `${site.name} - ${t("hero.eyebrow")}`, description = t("meta.description"), intro = false, noindex = false } =
+  Astro.props;
+
+const basePath = stripLocale(Astro.url.pathname);
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(locale === "en" ? "/og-en.png" : "/og-es.png", Astro.site);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#06060a" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    {
+      locales.map((alt) => (
+        <link rel="alternate" hreflang={alt} href={new URL(localePath(alt, basePath), Astro.site)} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={new URL(localePath("es", basePath), Astro.site)} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={dateLocale[locale].replace("-", "_")} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
     <title>{title}</title>
+    <slot name="head" />
   </head>
   <body class:list={{ "is-loading": intro }}>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-200 focus:rounded-full focus:bg-cyan focus:px-4 focus:py-2 focus:text-ink"
+    >
+      {t("skip")}
+    </a>
     <slot />
   </body>
 </html>

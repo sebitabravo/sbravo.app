@@ -2,6 +2,7 @@
 import type { App } from "../../lib/types";
 import { formatDate } from "../../lib/catalog";
 import { splitWords } from "../../scripts/split";
+import { dateLocale, localePath, toLocale, useTranslations } from "../../i18n/ui";
 import Arrow from "../icons/Arrow.astro";
 
 interface Props {
@@ -9,58 +10,74 @@ interface Props {
 }
 
 const { app } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const tokens = splitWords(app.title);
 const platforms = app.platforms.length > 1 ? `${app.platforms[0]} +${app.platforms.length - 1}` : app.platforms[0];
+// grafema completo: slice(0, 1) partiría un emoji por la mitad
+const monogram = [...new Intl.Segmenter().segment(app.title.trim())][0]?.segment ?? "?";
 ---
 
 <article
-  class="app-card group/card relative min-w-0 overflow-hidden rounded-card border border-line bg-surface transition-colors duration-200 transform-3d hover:border-(--app-accent)/45 hover:shadow-[0_18px_50px_-12px] hover:shadow-(--app-accent)/25"
+  class="app-card group/card relative min-w-0 overflow-hidden rounded-card border border-line bg-surface transition-[border-color,box-shadow] duration-200 transform-3d focus-within:border-(--app-accent)/45 hover:border-(--app-accent)/45 hover:shadow-[0_18px_50px_-12px] hover:shadow-(--app-accent)/25 active:scale-[0.99]"
   style={`--app-accent: ${app.accent}`}
   data-app-card
   data-reveal
 >
-  <div class="app-card__glare pointer-events-none absolute -top-32.5 -left-32.5 z-10 size-65 opacity-0 transition-opacity duration-250 group-hover/card:opacity-100"></div>
+  <div
+    class="app-card__glare pointer-events-none absolute -top-32.5 -left-32.5 z-10 size-65 opacity-0 transition-opacity duration-250 group-hover/card:opacity-100"
+  >
+  </div>
   <div class="app-card__art relative grid min-h-39 place-items-center overflow-hidden border-b border-line" aria-hidden="true">
+    <div class="app-card__blob absolute aspect-square w-28 -rotate-20 border border-(--app-accent)/55"></div>
+    <div class="app-card__blob absolute aspect-square w-39 rotate-35 border border-(--app-accent)/25"></div>
     {
       app.thumb ? (
-        <img src={app.thumb} alt="" loading="lazy" decoding="async" class="absolute inset-0 size-full object-cover" />
+        <img
+          src={app.thumb}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          onerror="this.remove()"
+          class="absolute inset-0 size-full object-cover"
+        />
       ) : (
-        <>
-          <div class="app-card__blob absolute aspect-square w-28 -rotate-20 border border-(--app-accent)/55" />
-          <div class="app-card__blob absolute aspect-square w-39 rotate-35 border border-(--app-accent)/25" />
-          <span class="z-10 grid aspect-square w-14.5 place-items-center rounded-[17px] border border-(--app-accent)/60 bg-(--app-accent)/18 font-display text-[23px] font-semibold text-fg">
-            {app.title.slice(0, 1)}
-          </span>
-        </>
+        <span class="z-10 grid aspect-square w-14.5 place-items-center rounded-tile border border-(--app-accent)/60 bg-(--app-accent)/18 font-display text-[23px] font-semibold text-fg">
+          {monogram}
+        </span>
       )
     }
   </div>
-  <div class="relative z-20 p-5 max-[420px]:p-4">
-    <div class="flex items-center justify-between gap-3">
-      <h3 class="min-w-0 text-[clamp(19px,2vw,23px)] wrap-anywhere" data-split>
+  <div class="relative z-20 p-5 max-sm:p-4">
+    <div class="flex items-start justify-between gap-3">
+      <h3 class="min-w-0 text-card wrap-anywhere" data-split>
         {tokens.map((token) => (/^\s+$/u.test(token) ? token : <span class="inline-block">{token}</span>))}
       </h3>
-      <span class="shrink-0 font-mono text-[11px] text-(--app-accent) tabular-nums">v{app.version}</span>
+      <span class="app-card__accent mt-1 max-w-[9ch] shrink-0 truncate font-mono text-xs tabular-nums" title={app.version}>
+        v{app.version}
+      </span>
     </div>
-    <p class="mt-3.5 mb-5 min-h-[4.65em] text-sm leading-[1.55] text-muted">{app.description}</p>
+    <p class="mt-3.5 mb-5 line-clamp-3 min-h-[4.65em] text-sm leading-[1.55] text-muted">{app.description[locale]}</p>
     <div
-      class="flex items-center justify-between gap-3 border-b border-line pb-4 text-[11px] text-muted max-[420px]:flex-col max-[420px]:items-start max-[420px]:gap-1"
+      class="flex items-center justify-between gap-3 border-b border-line pb-4 text-xs text-muted max-sm:flex-col max-sm:items-start max-sm:gap-1"
     >
-      <span>By {app.author} &middot; {platforms} &middot; {app.size}</span>
-      <time class="tabular-nums" datetime={app.uploaded}>{formatDate(app.uploaded)}</time>
+      <span class="min-w-0 wrap-anywhere">{t("card.by")} {app.author} &middot; {platforms} &middot; {app.size}</span>
+      <time class="shrink-0 tabular-nums" datetime={app.uploaded}>{formatDate(app.uploaded, dateLocale[locale])}</time>
     </div>
     <div class="flex items-center justify-between gap-3 pt-4">
-      <span class="rounded-full border border-(--app-accent)/30 px-2.5 py-1 font-mono text-[11px] text-(--app-accent)">
-        {app.category}
+      <span
+        class="app-card__accent min-w-0 truncate rounded-full border border-(--app-accent)/30 px-2.5 py-1 font-mono text-xs"
+        title={app.category[locale]}
+      >
+        {app.category[locale]}
       </span>
       <a
-        class="group/link inline-flex min-h-11 items-center gap-2 text-[13px] font-semibold text-fg"
-        href={`/apps/${app.slug}`}
-        aria-label={`View ${app.title} details`}
+        class="group/link inline-flex min-h-11 shrink-0 items-center gap-2 text-sm font-semibold text-fg after:absolute after:inset-0 after:z-30 after:content-['']"
+        href={localePath(locale, `/apps/${app.slug}/`)}
       >
-        Explore
+        {t("card.explore")} <span class="sr-only">{app.title}</span>
         <Arrow
-          class="size-4.5 text-(--app-accent) transition-transform duration-200 group-hover/link:translate-x-0.5 group-hover/link:-translate-y-0.5"
+          class="app-card__accent size-4.5 transition-transform duration-200 group-hover/card:translate-x-0.5 group-hover/card:-translate-y-0.5"
         />
       </a>
     </div>
@@ -80,5 +97,9 @@ const platforms = app.platforms.length > 1 ? `${app.platforms[0]} +${app.platfor
   .app-card__blob {
     border-radius: 30% 70% 58% 42% / 42% 38% 62% 58%;
     box-shadow: inset 0 0 32px color-mix(in srgb, var(--app-accent) 15%, transparent);
+  }
+  /* aclarar el acento asegura 4.5:1 sobre surface incluso con violeta */
+  .app-card__accent {
+    color: color-mix(in srgb, var(--app-accent) 80%, white);
   }
 </style>

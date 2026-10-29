@@ -1,0 +1,44 @@
+---
+import Base from "../layouts/Base.astro";
+import Intro from "../components/Intro.astro";
+import Header from "../components/Header.astro";
+import Hero from "../components/Hero.astro";
+import Ticker from "../components/sections/Ticker.astro";
+import Catalog from "../components/sections/Catalog.astro";
+import Update from "../components/sections/Update.astro";
+import Socials from "../components/sections/Socials.astro";
+import News from "../components/sections/News.astro";
+import Notice from "../components/sections/Notice.astro";
+import Footer from "../components/sections/Footer.astro";
+import { apps, news, site, socials } from "../data/catalog";
+import { sortByDateDesc, validateCatalog } from "../lib/catalog";
+import { toLocale } from "../i18n/ui";
+
+// datos inválidos rompen el build en vez de publicarse rotos
+const errors = validateCatalog(apps, news);
+if (errors.length > 0) throw new Error(`Invalid catalog data:\n- ${errors.join("\n- ")}`);
+
+const locale = toLocale(Astro.currentLocale);
+const sortedApps = sortByDateDesc(apps, (app) => app.uploaded);
+const sortedNews = sortByDateDesc(news, (item) => item.date);
+const jsonLd = { "@context": "https://schema.org", "@type": "WebSite", name: site.name, url: Astro.site?.href, inLanguage: locale };
+---
+
+<Base intro>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Intro />
+  <Header />
+  <main id="main" tabindex="-1">
+    <Hero />
+    <Ticker text={site.ticker[locale]} />
+    <Notice text={site.notice[locale]} />
+    <Catalog apps={sortedApps} />
+    <Update site={site} />
+    {socials.length > 0 && <Socials socials={socials} />}
+    <News news={sortedNews} />
+  </main>
+  <Footer />
+  <script>
+    import "../scripts/motion";
+  </script>
+</Base>

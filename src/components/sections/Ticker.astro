@@ -1,18 +1,20 @@
 ---
 import Spark from "../icons/Spark.astro";
+import { toLocale, useTranslations } from "../../i18n/ui";
 
 interface Props {
   text: string;
 }
 
 const { text } = Astro.props;
+const t = useTranslations(toLocale(Astro.currentLocale));
 const rows = [
-  { reverse: false, item: "text-[10px] font-mono uppercase tracking-[0.16em] text-muted" },
-  { reverse: true, item: "font-display text-[clamp(36px,6vw,84px)] font-semibold leading-[1.15] tracking-[-0.02em]" },
+  { reverse: false, item: "text-xs font-mono uppercase tracking-[0.16em] text-muted" },
+  { reverse: true, item: "font-display text-[clamp(28px,4vw,56px)] font-semibold leading-[1.15] tracking-[-0.02em]" },
 ];
 ---
 
-<section class="ticker overflow-hidden border-y border-line bg-surface py-4.5" aria-label="Site updates">
+<section class="ticker relative overflow-hidden border-y border-line bg-surface py-4.5" aria-label={t("ticker.label")}>
   {
     rows.map((row, index) => (
       <div class:list={["ticker__row", { "ticker__row--reverse mt-2": row.reverse }]} data-ticker-row>
@@ -34,6 +36,20 @@ const rows = [
       </div>
     ))
   }
+  <button
+    type="button"
+    class="absolute right-(--gutter) bottom-2 grid size-9 place-items-center rounded-full border border-line bg-ink/80 text-muted transition-colors hover:text-fg"
+    aria-pressed="false"
+    aria-label={t("ticker.pause")}
+    data-ticker-toggle
+    data-label-pause={t("ticker.pause")}
+    data-label-play={t("ticker.play")}
+  >
+    <svg viewBox="0 0 16 16" class="size-3.5" fill="currentColor" aria-hidden="true">
+      <path class="ticker__icon-pause" d="M4 3h3v10H4zM9 3h3v10H9z" />
+      <path class="ticker__icon-play hidden" d="M4 3l9 5-9 5z" />
+    </svg>
+  </button>
 </section>
 
 <style>
@@ -41,5 +57,11 @@ const rows = [
   .ticker__outline {
     color: transparent;
     -webkit-text-stroke: 1px rgb(236 235 245 / 0.45);
+  }
+  [aria-pressed="true"] .ticker__icon-pause {
+    display: none;
+  }
+  [aria-pressed="true"] .ticker__icon-play {
+    display: block;
   }
 </style>

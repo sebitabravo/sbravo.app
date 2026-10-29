@@ -13,6 +13,8 @@ let lenis: Lenis | undefined;
 let tickerAnimations: gsap.core.Tween[] = [];
 let lenisTicker: ((time: number) => void) | undefined;
 let started = false;
+let tickerPausedByUser = false;
+const tickerToggle = document.querySelector<HTMLButtonElement>("[data-ticker-toggle]");
 
 function revealStaticContent(): void {
   gsap.killTweensOf("[data-reveal], [data-split] > span, [data-parallax]");
@@ -26,6 +28,8 @@ function revealStaticContent(): void {
   lenis?.destroy();
   lenis = undefined;
   ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
+  // sin movimiento el botón de pausa no tiene sentido
+  if (tickerToggle) tickerToggle.hidden = true;
 }
 
 function applyScrollMotion(): void {
@@ -51,9 +55,10 @@ function applyScrollMotion(): void {
   document.querySelectorAll<HTMLElement>("[data-reveal]").forEach((element) => {
     gsap.fromTo(
       element,
-      { autoAlpha: 0, y: 28 },
+      // opacity y no autoAlpha: visibility:hidden sacaría el contenido del tab y del lector de pantalla
+      { opacity: 0, y: 28 },
       {
-        autoAlpha: 1,
+        opacity: 1,
         y: 0,
         duration: 0.8,
         ease: "power2.out",
@@ -67,10 +72,10 @@ function applyScrollMotion(): void {
     if (words.length === 0) return;
     gsap.fromTo(
       words,
-      { yPercent: 115, autoAlpha: 0 },
+      { yPercent: 115, opacity: 0 },
       {
         yPercent: 0,
-        autoAlpha: 1,
+        opacity: 1,
         duration: 0.7,
         stagger: 0.045,
         ease: "power3.out",
@@ -105,8 +110,28 @@ function applyScrollMotion(): void {
       trigger: track,
       start: "top bottom",
       end: "bottom top",
-      onToggle: (self) => (self.isActive ? animation.play() : animation.pause()),
+      onToggle: (self) => (self.isActive && !tickerPausedByUser ? animation.play() : animation.pause()),
     });
+  });
+
+  // WCAG 2.2.2: todo lo que se mueve más de 5 s necesita una forma de pausarlo
+  if (tickerToggle) tickerToggle.hidden = false;
+  tickerToggle?.addEventListener("click", () => {
+    tickerPausedByUser = !tickerPausedByUser;
+    tickerToggle.setAttribute("aria-pressed", String(tickerPausedByUser));
+    tickerToggle.setAttribute(
+      "aria-label",
+      (tickerPausedByUser ? tickerToggle.dataset.labelPlay : tickerToggle.dataset.labelPause) ?? "",
+    );
+    tickerAnimations.forEach((animation) => (tickerPausedByUser ? animation.pause() : animation.play()));
+  });
+
+  // quien navega con teclado ve el contenido al enfocarlo, aunque su reveal por scroll no haya corrido
+  document.addEventListener("focusin", (event) => {
+    const reveal = (event.target as Element | null)?.closest<HTMLElement>("[data-reveal]");
+    if (!reveal) return;
+    gsap.killTweensOf(reveal);
+    gsap.set(reveal, { opacity: 1, y: 0 });
   });
 
   if (finePointer.matches) {

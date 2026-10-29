@@ -1,33 +1,63 @@
 ---
 import Logo from "./Logo.astro";
+import { news, site } from "../data/catalog";
+import { localePath, locales, stripLocale, toLocale, useTranslations } from "../i18n/ui";
 
-interface Props {
-  links: { label: string; href: string }[];
-}
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const home = localePath(locale);
+const basePath = stripLocale(Astro.url.pathname);
 
-const { links } = Astro.props;
+const links = [
+  { label: t("nav.catalog"), href: `${home}#catalog` },
+  ...(news.length > 0 ? [{ label: t("nav.updates"), href: `${home}#news` }] : []),
+  ...(site.supportUrl ? [{ label: t("nav.support"), href: `${home}#support` }] : []),
+];
 ---
 
-<header class="absolute inset-x-0 top-0 z-50">
-  <div class="shell flex h-20 items-center justify-between gap-6">
-    <a href="/" class="text-[22px] text-fg" aria-label="sbravo home">
-      <Logo wordmark title="" />
+<header class="fixed inset-x-0 top-0 z-50 border-b border-line bg-ink/90 loading:pointer-events-none">
+  <div class="shell flex h-16 items-center justify-between gap-4">
+    <a href={home} class="inline-flex min-h-11 items-center text-[22px] text-fg" aria-label={t("footer.home")}>
+      <Logo title="" />
+      <span class="ml-[0.35em] font-display font-bold tracking-[-0.04em]">sbravo</span>
     </a>
-    <nav aria-label="Primary">
-      <ul class="flex items-center gap-1 text-sm">
+    <div class="flex items-center gap-1">
+      <nav aria-label={t("nav.primary")} class="max-sm:hidden">
+        <ul class="flex items-center gap-1 text-sm">
+          {
+            links.map((link) => (
+              <li>
+                <a
+                  class="inline-flex min-h-11 items-center rounded-full px-3 text-muted transition-colors hover:bg-white/5 hover:text-fg"
+                  href={link.href}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <ul class="ml-1 flex items-center rounded-full border border-line p-0.5 font-mono text-xs" aria-label={t("nav.language")}>
         {
-          links.map((link) => (
+          locales.map((alt) => (
             <li>
               <a
-                class="inline-flex min-h-11 items-center rounded-full px-3.5 text-muted transition-colors hover:bg-white/5 hover:text-fg"
-                href={link.href}
+                href={localePath(alt, basePath)}
+                hreflang={alt}
+                lang={alt}
+                aria-current={alt === locale ? "true" : undefined}
+                class:list={[
+                  "inline-flex min-h-9 min-w-9 items-center justify-center rounded-full uppercase transition-colors",
+                  alt === locale ? "bg-white/10 text-fg" : "text-muted hover:text-fg",
+                ]}
               >
-                {link.label}
+                {alt}
               </a>
             </li>
           ))
         }
       </ul>
-    </nav>
+    </div>
   </div>
 </header>

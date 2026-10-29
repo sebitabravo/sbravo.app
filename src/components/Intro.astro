@@ -1,6 +1,8 @@
 ---
 import Logo from "./Logo.astro";
+import { toLocale, useTranslations } from "../i18n/ui";
 
+const t = useTranslations(toLocale(Astro.currentLocale));
 const letters = "sbravo".split("");
 ---
 
@@ -9,7 +11,7 @@ const letters = "sbravo".split("");
   <div class="intro__panel intro__panel--bottom absolute inset-x-0 bottom-0 h-[50.5%] bg-ink"></div>
   <div class="relative grid justify-items-center gap-5">
     <div class="flex overflow-hidden text-[clamp(44px,10vw,120px)] leading-none">
-      <span class="intro__letter inline-block"><Logo /></span>
+      <span class="intro__letter inline-block"><Logo title="" /></span>
       {
         letters.map((letter) => (
           <span class="intro__letter grad-text inline-block font-display font-bold tracking-[-0.04em]">{letter}</span>
@@ -18,8 +20,8 @@ const letters = "sbravo".split("");
     </div>
     <div class="intro__bar h-px w-[min(240px,60vw)] overflow-hidden bg-line"><i class="block h-full bg-(image:--grad)"></i></div>
   </div>
-  <span class="intro__count eyebrow absolute right-(--gutter) bottom-7 text-sm text-fg tabular-nums">000</span>
-  <span class="intro__label eyebrow absolute bottom-7 left-(--gutter)">Loading experience</span>
+  <span class="intro__count eyebrow absolute right-(--gutter) bottom-7 text-fg tabular-nums">000</span>
+  <span class="intro__label eyebrow absolute bottom-7 left-(--gutter)">{t("intro.loading")}</span>
 </div>
 
 <noscript>
@@ -58,13 +60,31 @@ const letters = "sbravo".split("");
   })();
 
   // al recargar, Chrome restaura el scroll y el intro terminaría revelando la mitad de la página
-  history.scrollRestoration = "manual";
-  if (!seen) window.scrollTo(0, 0);
+  if (!seen) {
+    history.scrollRestoration = "manual";
+    window.scrollTo(0, 0);
+  }
+
+  // mientras el overlay tapa la página, nada debajo puede recibir foco ni taps
+  const content = document.querySelectorAll<HTMLElement>("header, main, footer");
+  content.forEach((element) => (element.inert = true));
 
   const finish = () => {
+    if (!root.isConnected) return;
+    content.forEach((element) => (element.inert = false));
     root.remove();
     document.body.classList.remove("is-loading");
     window.dispatchEvent(new CustomEvent("intro:done"));
+    // getElementById no parsea selectores: #v1.0.0 rompería querySelector
+    if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView();
+  };
+  // red de seguridad: si algo del intro falla, la página no queda bloqueada
+  setTimeout(finish, 8000);
+
+  // la bandera cubre al Hero si su script corre después de este evento
+  const openIntro = () => {
+    (window as Window & { __introOpened?: boolean }).__introOpened = true;
+    window.dispatchEvent(new CustomEvent("intro:open"));
   };
 
   // espera a que three.js esté listo, con tope para conexiones lentas o sin WebGL
@@ -75,9 +95,8 @@ const letters = "sbravo".split("");
   });
 
   if (reduced || seen) {
-    window.dispatchEvent(new CustomEvent("intro:open"));
+    openIntro();
     finish();
-    if (location.hash) document.querySelector(location.hash)?.scrollIntoView();
   } else {
     const progress = { value: 0 };
     const render = () => (count.textContent = String(Math.round(progress.value)).padStart(3, "0"));
@@ -93,7 +112,7 @@ const letters = "sbravo".split("");
         .to(".intro__bar i", { scaleX: 1, duration: 0.45, ease: "power1.out" }, "<")
         .to(".intro__letter", { y: "-105%", duration: 0.6, ease: "expo.out", stagger: 0.04 })
         .to([".intro__count", ".intro__label", ".intro__bar"], { opacity: 0, duration: 0.3 }, "<")
-        .add(() => window.dispatchEvent(new CustomEvent("intro:open")))
+        .add(openIntro)
         .to(".intro__panel--top", { yPercent: -100, duration: 1.2, ease: "expo.inOut" })
         .to(".intro__panel--bottom", { yPercent: 100, duration: 1.2, ease: "expo.inOut" }, "<");
     });

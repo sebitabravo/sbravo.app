@@ -1,33 +1,23 @@
 ---
-import type { Site } from "../../lib/types";
 import Logo from "../Logo.astro";
 import Arrow from "../icons/Arrow.astro";
+import { site } from "../../data/catalog";
+import { localePath, toLocale, useTranslations } from "../../i18n/ui";
 
-interface Props {
-  site: Site;
-}
-
-const { site } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 const year = new Date().getFullYear();
 ---
 
 <footer class="border-t border-line bg-surface pt-13.5 pb-6">
   <div class="shell grid gap-10.5">
-    <div data-reveal>
-      <a class="inline-block text-[clamp(28px,5vw,48px)]" href="/" aria-label={`${site.name} home`}>
-        <Logo wordmark title="" />
-      </a>
-      <p class="mt-3 max-w-[48ch] text-[13px] text-muted">
-        Thank you for being here and helping good tools find their people.
-      </p>
-    </div>
-    <div
-      class="flex flex-wrap justify-between gap-x-5 gap-y-3 border-t border-line pt-4.5 font-mono text-[10px] text-muted"
-    >
+    <a class="inline-flex w-fit text-[clamp(28px,5vw,48px)]" href={localePath(locale)} aria-label={t("footer.home")}>
+      <Logo wordmark title="" />
+    </a>
+    <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-3 border-t border-line pt-4.5 font-mono text-xs text-muted">
       <span class="tabular-nums">&copy; {year} {site.name}</span>
-      <span>Made with intention.</span>
-      <a class="inline-flex items-center gap-1.5 text-fg transition-colors hover:text-cyan" href="#top">
-        Back to top <Arrow direction="up" class="size-3.5" />
+      <a class="inline-flex min-h-11 items-center gap-1.5 text-fg transition-colors hover:text-cyan" href="#main">
+        {t("footer.top")} <Arrow direction="up" class="size-3.5" />
       </a>
     </div>
   </div>

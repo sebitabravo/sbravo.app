@@ -1,0 +1,166 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/sections/Footer.astro";
+import Logo from "../components/Logo.astro";
+import { news } from "../data/catalog";
+import { formatDate, sortByDateDesc, versionAnchor } from "../lib/catalog";
+import { dateLocale, localePath, toLocale, useTranslations } from "../i18n/ui";
+import type { App } from "../lib/types";
+
+interface Props {
+  app: App;
+}
+
+const { app } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+const changelog = sortByDateDesc(
+  news.filter((item) => item.app === app.slug),
+  (item) => item.date,
+);
+const facts = [
+  { label: t("detail.platforms"), value: app.platforms.join(", ") },
+  { label: t("detail.size"), value: app.size },
+  { label: t("detail.version"), value: app.version },
+];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: app.title,
+  softwareVersion: app.version,
+  description: app.description[locale],
+  operatingSystem: app.platforms.join(", "),
+  applicationCategory: app.category.en,
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+---
+
+<Base title={`${app.title} ${app.version} - sbravo`} description={app.description[locale]}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  <Header />
+  <main id="main" tabindex="-1" class="detail shell section-y pt-32" style={`--app-accent:${app.accent}`}>
+    <a
+      href={`${localePath(locale)}#catalog`}
+      class="eyebrow mb-12 inline-flex min-h-11 items-center gap-3 transition-colors hover:text-fg"
+    >
+      <Logo class="text-lg" title="" />
+      {t("detail.back")}
+    </a>
+    <div class="detail__head grid grid-cols-1 items-center gap-[clamp(24px,6vw,80px)] md:grid-cols-[minmax(0,320px)_1fr]">
+      {
+        app.thumb ? (
+          <img
+            src={app.thumb}
+            alt=""
+            class="aspect-square w-full max-w-55 rounded-card object-cover md:max-w-none"
+            onerror="this.replaceWith(Object.assign(document.createElement('div'), { className: 'detail__orb aspect-square w-full max-w-55 rounded-full md:max-w-none' }))"
+          />
+        ) : (
+          <div class="detail__orb aspect-square w-full max-w-55 rounded-full md:max-w-none" aria-hidden="true" />
+        )
+      }
+      <div class="min-w-0">
+        <p class="eyebrow">{app.category[locale]} &middot; v{app.version}</p>
+        <h1 class="mt-3 mb-5 text-[clamp(48px,9vw,120px)] wrap-anywhere">{app.title}</h1>
+        <p class="max-w-[52ch] text-lg text-muted">{app.description[locale]}</p>
+        <p class="eyebrow mt-4">
+          {`${t("detail.by")} ${app.author} · ${t("detail.uploaded")} ${formatDate(app.uploaded, dateLocale[locale])}`}
+        </p>
+        <a class="btn btn-primary mt-7" href={app.downloadUrl}>
+          {t("detail.download")} v{app.version} &middot; {app.size}
+        </a>
+      </div>
+    </div>
+
+    <dl
+      class="mt-24 grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-px overflow-hidden rounded-card border border-line bg-line"
+    >
+      {
+        facts.map((fact) => (
+          <div class="bg-surface p-6">
+            <dt class="eyebrow">{fact.label}</dt>
+            <dd class="mt-2 text-lg tabular-nums wrap-anywhere">{fact.value}</dd>
+          </div>
+        ))
+      }
+      {
+        app.sha256 && (
+          <div class="bg-surface p-6">
+            <dt class="eyebrow">SHA-256</dt>
+            <dd class="mt-2 font-mono text-[13px] text-muted wrap-anywhere">{app.sha256}</dd>
+          </div>
+        )
+      }
+    </dl>
+    {
+      (app.virustotalUrl || app.sourceUrl) && (
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          {app.virustotalUrl && (
+            <a class="btn" href={app.virustotalUrl} rel="noopener">
+              {t("detail.virustotal")}
+            </a>
+          )}
+          {app.sourceUrl && (
+            <a class="btn" href={app.sourceUrl} rel="noopener">
+              {t("detail.source")}
+            </a>
+          )}
+        </div>
+      )
+    }
+
+    {
+      changelog.length > 0 && (
+        <section class="mt-30" aria-labelledby="changelog-title">
+          <h2 id="changelog-title" class="text-section">
+            {t("detail.changelog")}
+          </h2>
+          <ol class="mt-8 border-t border-line">
+            {changelog.map((item) => (
+              <li id={versionAnchor(item.version)} class="scroll-mt-24 border-b border-line py-7">
+                <span class="eyebrow tabular-nums">
+                  {formatDate(item.date, dateLocale[locale])} &middot; v{item.version}
+                </span>
+                <h3 class="my-2 text-card wrap-anywhere">{item.title[locale]}</h3>
+                <p class="text-muted">{item.summary[locale]}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+      )
+    }
+  </main>
+  <Footer />
+</Base>
+
+<style is:global>
+  .detail__orb {
+    background:
+      radial-gradient(circle at 30% 30%, #fff8 0, transparent 30%),
+      radial-gradient(circle at 60% 70%, var(--app-accent), transparent 70%),
+      var(--color-surface);
+    box-shadow: 0 30px 120px -20px var(--app-accent);
+    animation: float 10s ease-in-out infinite;
+  }
+  /* entrada corta que conecta la card con su página; solo opacity y transform */
+  .detail__head {
+    animation: detail-in 250ms var(--ease-expo) both;
+  }
+  @keyframes float {
+    50% {
+      transform: translateY(-14px);
+    }
+  }
+  @keyframes detail-in {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .detail__orb {
+      animation: none;
+    }
+  }
+</style>

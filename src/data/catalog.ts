@@ -3,13 +3,20 @@ import type { App, NewsItem, Social, Site } from "../lib/types";
 
 export const site: Site = {
   name: "sbravo",
-  tagline: "Free tools, crafted with care.",
-  ticker: "Leave a comment · Support the project · New builds every month · Open source when possible",
-  supportUrl: "#support",
-  notice: "Some mirrors may be slow during peak hours. If a download fails, retry in a few minutes.",
-  updated: "2026-10-28",
-  updateNote:
-    "New catalog design, faster downloads and changelogs per release. Thanks to everyone sending feedback.",
+  ticker: {
+    es: "Herramientas gratis · Changelogs honestos · Descargas directas · En español e inglés",
+    en: "Free tools · Honest changelogs · Direct downloads · In Spanish and English",
+  },
+  supportUrl: "",
+  notice: {
+    es: "Si una descarga falla, vuelve a intentarlo en unos minutos.",
+    en: "If a download fails, try again in a few minutes.",
+  },
+  updated: "2026-10-29",
+  updateNote: {
+    es: "Nuevo sitio: catálogo con changelog por versión, tamaño y plataformas de cada descarga.",
+    en: "New site: a catalog with per-release changelogs, file size and platforms for every download.",
+  },
 };
 
 // Plantilla para agregar una app (los binarios conviene alojarlos en GitHub Releases, no en el repo):
@@ -17,10 +24,10 @@ export const site: Site = {
 //   slug: "my-tool",
 //   title: "My Tool",
 //   version: "1.0.0",
-//   description: "One sentence about what it does.",
+//   description: { es: "Una frase sobre lo que hace.", en: "One sentence about what it does." },
 //   author: "sbravo",
 //   uploaded: "2026-11-01",
-//   category: "Utility",
+//   category: { es: "Utilidad", en: "Utility" },
 //   accent: "#7c5cff",
 //   downloadUrl: "https://github.com/sebitabravo/my-tool/releases/download/v1.0.0/my-tool-setup.exe",
 //   thumb: "/thumbs/my-tool.webp",
@@ -33,9 +40,9 @@ export const site: Site = {
 export const apps: App[] = [];
 
 // Cada noticia apunta a una app existente por slug y enlaza a su changelog (#v<version>).
+// { date: "2026-11-01", app: "my-tool", version: "1.0.0", title: { es: "...", en: "..." }, summary: { es: "...", en: "..." } }
 export const news: NewsItem[] = [];
 
-export const socials: Social[] = [
-  { label: "YouTube", handle: "@your-channel", url: "#" },
-  { label: "Community", handle: "Join the group", url: "#" },
-];
+// Agrega tus redes reales; la sección se oculta mientras esté vacía.
+// { label: "YouTube", handle: "@tu-canal", url: "https://youtube.com/@tu-canal" }
+export const socials: Social[] = [];

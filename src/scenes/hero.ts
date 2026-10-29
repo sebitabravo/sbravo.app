@@ -92,12 +92,12 @@ const particleFragment = /* glsl */ `
   }
 `;
 
-function buildParticles(): BufferGeometry {
-  const target = new Float32Array(PARTICLES * 3);
-  const start = new Float32Array(PARTICLES * 3);
-  const seeds = new Float32Array(PARTICLES);
+function buildParticles(count: number): BufferGeometry {
+  const target = new Float32Array(count * 3);
+  const start = new Float32Array(count * 3);
+  const seeds = new Float32Array(count);
 
-  for (let i = 0; i < PARTICLES; i++) {
+  for (let i = 0; i < count; i++) {
     // dirección uniforme sobre la esfera (método de Marsaglia simplificado)
     const u = Math.random() * 2 - 1;
     const theta = Math.random() * Math.PI * 2;
@@ -119,10 +119,31 @@ function buildParticles(): BufferGeometry {
   return geometry;
 }
 
-export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): HeroScene {
-  const renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
-  const pixelRatio = Math.min(window.devicePixelRatio, 2);
+export function initHero(
+  canvas: HTMLCanvasElement,
+  container: HTMLElement,
+  options?: { onContextLost?: () => void },
+): HeroScene {
+  const compact = container.getBoundingClientRect().width < 768;
+  let frame = 0;
+  let running = false;
+  let contextLost = false;
+  const renderer = new WebGLRenderer({
+    canvas,
+    antialias: !compact,
+    alpha: true,
+    powerPreference: "high-performance",
+  });
+  const pixelRatio = Math.min(window.devicePixelRatio, compact ? 1.5 : 2);
   renderer.setPixelRatio(pixelRatio);
+  const onContextLost = (event: Event) => {
+    event.preventDefault();
+    contextLost = true;
+    running = false;
+    cancelAnimationFrame(frame);
+    options?.onContextLost?.();
+  };
+  canvas.addEventListener("webglcontextlost", onContextLost);
 
   const scene = new Scene();
   const camera = new PerspectiveCamera(40, 1, 0.1, 100);
@@ -131,7 +152,7 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
   const group = new Group();
   scene.add(group);
 
-  const blobGeometry = new IcosahedronGeometry(1.25, 48);
+  const blobGeometry = new IcosahedronGeometry(1.25, compact ? 20 : 48);
   const blobMaterial = new ShaderMaterial({
     vertexShader: blobVertex,
     fragmentShader: blobFragment,
@@ -140,7 +161,7 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
   const blob = new Mesh(blobGeometry, blobMaterial);
   group.add(blob);
 
-  const particleGeometry = buildParticles();
+  const particleGeometry = buildParticles(compact ? 1600 : PARTICLES);
   const particleMaterial = new ShaderMaterial({
     vertexShader: particleVertex,
     fragmentShader: particleFragment,
@@ -167,12 +188,12 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     // en pantallas angostas se aleja la cámara para que el blob no se corte
-    camera.position.z = width < 720 ? 9 : 7;
+    camera.position.z = width < 768 ? 9 : 7;
     // en desktop el blob se corre a la derecha para no tapar el titular
-    offsetX = width >= 900 ? 1.6 : 0;
+    offsetX = width >= 1024 ? 1.6 : 0;
     // en mobile va arriba y más chico para que el texto quede legible
-    offsetY = width < 720 ? 2.1 : 0;
-    baseScale = width < 720 ? 0.75 : 1;
+    offsetY = width < 768 ? 2.1 : 0;
+    baseScale = width < 768 ? 0.75 : 1;
     camera.updateProjectionMatrix();
   };
   const resizeObserver = new ResizeObserver(resize);
@@ -187,9 +208,6 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
   intersection.observe(container);
 
   const timer = new Timer();
-  let frame = 0;
-  let running = false;
-
   const render = (now: number) => {
     timer.update(now);
     const elapsed = timer.getElapsed();
@@ -218,7 +236,7 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
   // solo renderiza si el hero está visible y la pestaña activa
   const motionPreference = matchMedia("(prefers-reduced-motion: reduce)");
   function loop() {
-    const shouldRun = inView && !document.hidden && !motionPreference.matches;
+    const shouldRun = inView && !document.hidden && !motionPreference.matches && !contextLost;
     if (shouldRun && !running) {
       running = true;
       frame = requestAnimationFrame(tick);
@@ -249,6 +267,7 @@ export function initHero(canvas: HTMLCanvasElement, container: HTMLElement): Her
     dispose() {
       running = false;
       cancelAnimationFrame(frame);
+      canvas.removeEventListener("webglcontextlost", onContextLost);
       window.removeEventListener("pointermove", onPointer);
       document.removeEventListener("visibilitychange", loop);
       motionPreference.removeEventListener("change", loop);

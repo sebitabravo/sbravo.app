@@ -7,10 +7,10 @@ const base: App = {
   slug: "demo",
   title: "Demo",
   version: "1.0.0",
-  description: "",
+  description: { es: "Demo", en: "Demo" },
   author: "x",
   uploaded: "2026-01-01",
-  category: "Utility",
+  category: { es: "Utilidad", en: "Utility" },
   accent: "#fff",
   downloadUrl: "#",
   platforms: ["Windows"],
@@ -33,6 +33,10 @@ describe("sortByDateDesc", () => {
 describe("formatDate", () => {
   it("formats ISO date without timezone day shift", () => {
     expect(formatDate("2026-10-01")).toBe("Oct 01, 2026");
+  });
+
+  it("formats dates in Spanish", () => {
+    expect(formatDate("2026-10-01", "es-CL")).toMatch(/01.*oct.*2026/i);
   });
 
   it("throws on invalid date", () => {
@@ -67,8 +71,17 @@ describe("validateCatalog", () => {
   });
 
   it("reports news pointing to unknown app", () => {
-    const errors = validateCatalog([base], [{ date: "2026-01-01", app: "ghost", version: "1.0.0", title: "", summary: "" }]);
+    const errors = validateCatalog([base], [{ date: "2026-01-01", app: "ghost", version: "1.0.0", title: { es: "t", en: "t" }, summary: { es: "", en: "" } }]);
     expect(errors).toEqual(["News points to unknown app: ghost"]);
+  });
+
+  it("accepts prerelease versions", () => {
+    expect(validateCatalog([{ ...base, version: "1.2.0-beta.1" }], [])).toEqual([]);
+  });
+
+  it("reports a missing translation", () => {
+    const errors = validateCatalog([{ ...base, description: { es: "Hola", en: " " } }], []);
+    expect(errors).toEqual(["Missing en description for demo"]);
   });
 
   it("reports missing platforms", () => {

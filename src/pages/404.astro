@@ -1,0 +1,21 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import { localePath } from "../i18n/ui";
+---
+
+<Base title="404 - sbravo" description="Página no encontrada / Page not found" noindex>
+  <Header />
+  <main id="main" tabindex="-1" class="shell section-y grid min-h-svh content-center gap-10 pt-32">
+    <section lang="es">
+      <h1 class="text-section">Página no encontrada</h1>
+      <p class="mt-4 text-muted">Esta página no existe o se movió.</p>
+      <a class="btn btn-primary mt-7" href={localePath("es")}>Volver al inicio</a>
+    </section>
+    <section lang="en" class="border-t border-line pt-10">
+      <h2 class="text-card">Page not found</h2>
+      <p class="mt-2 text-muted">This page does not exist or has moved.</p>
+      <a class="btn mt-5" href={localePath("en")}>Back to home</a>
+    </section>
+  </main>
+</Base>

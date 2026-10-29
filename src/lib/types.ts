@@ -1,12 +1,15 @@
+import type { Localized } from "../i18n/ui";
+
 export interface App {
   slug: string;
   title: string;
+  /** SemVer, se permite prerelease: 1.2.0 o 1.2.0-beta.1 */
   version: string;
-  description: string;
+  description: Localized;
   author: string;
   /** Fecha ISO YYYY-MM-DD */
   uploaded: string;
-  category: string;
+  category: Localized;
   accent: string;
   downloadUrl: string;
   /** Imagen en public/thumbs, ej. "/thumbs/my-tool.webp"; sin ella se usa el arte generado */
@@ -25,8 +28,8 @@ export interface NewsItem {
   /** slug de la App a la que apunta */
   app: string;
   version: string;
-  title: string;
-  summary: string;
+  title: Localized;
+  summary: Localized;
 }
 
 export interface Social {
@@ -37,10 +40,10 @@ export interface Social {
 
 export interface Site {
   name: string;
-  tagline: string;
-  ticker: string;
+  ticker: Localized;
+  /** URL externa de donaciones (Ko-fi, PayPal, GitHub Sponsors); vacía oculta los CTA de apoyo */
   supportUrl: string;
-  notice: string;
+  notice: Localized;
   updated: string;
-  updateNote: string;
+  updateNote: Localized;
 }

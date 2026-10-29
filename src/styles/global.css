@@ -15,6 +15,10 @@
   --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
 
   --radius-card: 18px;
+  --radius-tile: 16px;
+
+  --text-section: clamp(2.25rem, 6.5vw, 4.75rem);
+  --text-card: clamp(1.1875rem, 2vw, 1.375rem);
   --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -31,7 +35,9 @@
 @layer base {
   html {
     background: var(--color-ink);
-    scrollbar-color: rgb(124 92 255 / 0.45) var(--color-ink);
+    scrollbar-color: color-mix(in srgb, var(--color-violet) 45%, transparent) var(--color-ink);
+    /* el intro oculta el scroll; reservar el canal evita que el layout salte al terminar */
+    scrollbar-gutter: stable;
   }
 
   body {
@@ -58,8 +64,21 @@
     text-wrap: balance;
   }
 
+  h1 {
+    letter-spacing: -0.03em;
+  }
+
+  h3 {
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
   ::selection {
-    background: rgb(124 92 255 / 0.45);
+    background: color-mix(in srgb, var(--color-violet) 45%, transparent);
     color: var(--color-fg);
   }
 
@@ -117,10 +136,17 @@
   transition:
     background 0.3s,
     border-color 0.3s,
-    transform 0.3s var(--ease-expo);
-  &:hover {
-    background: rgb(255 255 255 / 0.08);
-    border-color: rgb(255 255 255 / 0.2);
+    transform 0.3s var(--ease-expo),
+    scale 0.14s ease-out;
+  /* `scale` es una propiedad aparte de `transform`: el press se suma al lift del hover */
+  &:active {
+    scale: 0.97;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: rgb(255 255 255 / 0.08);
+      border-color: rgb(255 255 255 / 0.2);
+    }
   }
 }
 
@@ -128,9 +154,11 @@
   background: var(--grad);
   border-color: transparent;
   color: var(--color-ink);
-  &:hover {
-    background: var(--grad);
-    transform: translateY(-2px);
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: var(--grad);
+      transform: translateY(-2px);
+    }
   }
 }
 

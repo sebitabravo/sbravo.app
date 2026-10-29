@@ -1,6 +1,7 @@
 ---
 import type { Site } from "../../lib/types";
 import { formatDate } from "../../lib/catalog";
+import { dateLocale, toLocale, useTranslations } from "../../i18n/ui";
 import Arrow from "../icons/Arrow.astro";
 
 interface Props {
@@ -8,44 +9,48 @@ interface Props {
 }
 
 const { site } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
 ---
 
 <section class="section-y" aria-labelledby="update-title">
-  <div class="shell grid grid-cols-1 gap-11 md:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] md:items-center md:gap-[8vw]">
+  <div
+    class:list={[
+      "shell grid grid-cols-1 gap-11",
+      site.supportUrl && "md:grid-cols-[minmax(0,1.2fr)_minmax(300px,0.8fr)] md:items-center md:gap-[8vw]",
+    ]}
+  >
     <div data-reveal>
-      <p class="eyebrow">A note from the maker</p>
-      <h2 id="update-title" class="mt-4 max-w-[12ch] text-[clamp(36px,7vw,76px)]">
-        Good things <span class="grad-text">keep moving.</span>
+      <p class="eyebrow">{t("update.eyebrow")}</p>
+      <h2 id="update-title" class="mt-4 max-w-[12ch] text-section">
+        {t("update.title.1")} <span class="grad-text">{t("update.title.2")}</span>
       </h2>
-      <p class="mt-6 mb-3.5 max-w-[58ch] text-muted">{site.updateNote}</p>
-      <p class="font-mono text-[11px] text-muted">
-        Last updated <time class="text-fg tabular-nums" datetime={site.updated}>{formatDate(site.updated)}</time>
+      <p class="mt-6 mb-3.5 max-w-[58ch] text-muted">{site.updateNote[locale]}</p>
+      <p class="font-mono text-xs text-muted">
+        {t("hero.updated")}{" "}
+        <time class="text-fg tabular-nums" datetime={site.updated}>{formatDate(site.updated, dateLocale[locale])}</time>
       </p>
     </div>
-    <aside
-      class="relative isolate min-w-0 overflow-hidden rounded-card border border-line bg-surface p-[clamp(24px,5vw,42px)]"
-      data-reveal
-    >
-      <span
-        class="update__orbit absolute -top-11 -right-10 -z-10 aspect-square w-47.5 rounded-full border border-cyan/20"
-        data-parallax
-        aria-hidden="true"></span>
-      <p class="eyebrow">Independent by design</p>
-      <h3 class="mt-5 max-w-[14ch] text-[clamp(25px,3vw,34px)]">Built with care. Kept alive by you.</h3>
-      <p class="mt-4 mb-6.5 max-w-[38ch] text-sm text-muted">
-        Support helps keep these tools free, maintained, and moving forward.
-      </p>
-      <a class="btn btn-primary" id="support" href={site.supportUrl}>
-        Support the project <Arrow class="size-4" />
-      </a>
-    </aside>
+    {
+      site.supportUrl && (
+        <aside
+          id="support"
+          class="relative isolate min-w-0 scroll-mt-24 overflow-hidden rounded-card border border-line bg-surface p-[clamp(24px,5vw,42px)]"
+          data-reveal
+        >
+          <span
+            class="absolute -top-11 -right-10 -z-10 aspect-square w-47.5 rounded-full border border-cyan/20 shadow-[inset_0_0_50px_rgb(124_92_255/0.1)]"
+            data-parallax
+            aria-hidden="true"
+          />
+          <p class="eyebrow">{t("update.support.eyebrow")}</p>
+          <h3 class="mt-5 max-w-[14ch] text-[clamp(25px,3vw,34px)]">{t("update.support.title")}</h3>
+          <p class="mt-4 mb-6.5 max-w-[38ch] text-sm text-muted">{t("update.support.body")}</p>
+          <a class="btn btn-primary" href={site.supportUrl} rel="noopener">
+            {t("hero.support")} <Arrow class="size-4" />
+          </a>
+        </aside>
+      )
+    }
   </div>
 </section>
-
-<style>
-  .update__orbit {
-    box-shadow:
-      0 0 80px rgb(0 212 255 / 0.09),
-      inset 0 0 50px rgb(124 92 255 / 0.1);
-  }
-</style>
