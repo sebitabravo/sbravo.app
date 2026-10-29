@@ -10,6 +10,7 @@ interface Props {
 const { news } = Astro.props;
 ---
 
+{news.length > 0 && (
 <section class="news section" aria-labelledby="news-title">
   <div class="container news__layout">
     <div class="news__intro" data-reveal>
@@ -36,6 +37,7 @@ const { news } = Astro.props;
     </ol>
   </div>
 </section>
+)}
 
 <style>
   .news {

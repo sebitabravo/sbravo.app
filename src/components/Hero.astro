@@ -10,7 +10,7 @@ import { formatDate } from "../lib/catalog";
   </div>
 
   <div class="hero__content container">
-    <p class="eyebrow hero__line">Free software hub &middot; {apps.length} tools</p>
+    <p class="eyebrow hero__line">Free software hub{apps.length > 0 && ` · ${apps.length} tools`}</p>
     <h1 class="hero__title">
       <span class="hero__mask"><span class="hero__word">Tools that</span></span>
       <span class="hero__mask"><span class="hero__word">feel like</span></span>

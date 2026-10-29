@@ -1,4 +1,4 @@
-// Contenido editable del sitio. Todo es placeholder ficticio: reemplazar por proyectos propios.
+// Contenido editable del sitio. Cada app nueva genera su card y su página /apps/<slug>.
 import type { App, NewsItem, Social, Site } from "../lib/types";
 
 export const site: Site = {
@@ -12,117 +12,27 @@ export const site: Site = {
     "New catalog design, faster downloads and changelogs per release. Thanks to everyone sending feedback.",
 };
 
-export const apps: App[] = [
-  {
-    slug: "wintune",
-    title: "WinTune",
-    version: "1.4.0",
-    description: "Windows performance tuner with safe, reversible presets for gaming and low-latency setups.",
-    author: "sbravo",
-    uploaded: "2026-10-20",
-    category: "Utility",
-    accent: "#7c5cff",
-    downloadUrl: "#",
-    platforms: ["Windows 10", "Windows 11"],
-    size: "6.8 MB",
-  },
-  {
-    slug: "pixelforge",
-    title: "PixelForge",
-    version: "2.1.3",
-    description: "Batch image converter and optimizer with WebP and AVIF output.",
-    author: "sbravo",
-    uploaded: "2026-09-14",
-    category: "Media",
-    accent: "#00d4ff",
-    downloadUrl: "#",
-    platforms: ["Windows", "macOS", "Linux"],
-    size: "18.4 MB",
-  },
-  {
-    slug: "clipnote",
-    title: "ClipNote",
-    version: "0.9.1",
-    description: "Clipboard history with tags, search and encrypted local storage.",
-    author: "sbravo",
-    uploaded: "2026-10-02",
-    category: "Productivity",
-    accent: "#ff4d8d",
-    downloadUrl: "#",
-    platforms: ["Windows", "macOS"],
-    size: "9.1 MB",
-  },
-  {
-    slug: "netpulse",
-    title: "NetPulse",
-    version: "1.0.0",
-    description: "Live latency and packet-loss monitor with per-app breakdown.",
-    author: "sbravo",
-    uploaded: "2026-08-30",
-    category: "Network",
-    accent: "#2bff88",
-    downloadUrl: "#",
-    platforms: ["Windows"],
-    size: "3.2 MB",
-  },
-  {
-    slug: "fontbox",
-    title: "FontBox",
-    version: "1.2.0",
-    description: "Preview, compare and organize local fonts without installing them.",
-    author: "sbravo",
-    uploaded: "2026-07-18",
-    category: "Design",
-    accent: "#ffb547",
-    downloadUrl: "#",
-    platforms: ["Windows", "macOS"],
-    size: "12.6 MB",
-  },
-  {
-    slug: "drivescope",
-    title: "DriveScope",
-    version: "3.0.2",
-    description: "Disk usage visualizer with treemaps and duplicate finder.",
-    author: "sbravo",
-    uploaded: "2026-10-11",
-    category: "Utility",
-    accent: "#5cffe1",
-    downloadUrl: "#",
-    platforms: ["Windows", "Linux"],
-    size: "7.5 MB",
-  },
-];
+// Plantilla para agregar una app (los binarios conviene alojarlos en GitHub Releases, no en el repo):
+// {
+//   slug: "my-tool",
+//   title: "My Tool",
+//   version: "1.0.0",
+//   description: "One sentence about what it does.",
+//   author: "sbravo",
+//   uploaded: "2026-11-01",
+//   category: "Utility",
+//   accent: "#7c5cff",
+//   downloadUrl: "https://github.com/sebitabravo/my-tool/releases/download/v1.0.0/my-tool-setup.exe",
+//   platforms: ["Windows 11"],
+//   size: "5.0 MB",
+//   sha256: "<sha256 del archivo publicado>",
+//   virustotalUrl: "https://www.virustotal.com/gui/file/<sha256>",
+//   sourceUrl: "https://github.com/sebitabravo/my-tool",
+// },
+export const apps: App[] = [];
 
-export const news: NewsItem[] = [
-  {
-    date: "2026-10-20",
-    app: "wintune",
-    version: "1.4.0",
-    title: "WinTune 1.4 released",
-    summary: "New latency preset and one-click restore point.",
-  },
-  {
-    date: "2026-10-11",
-    app: "drivescope",
-    version: "3.0.2",
-    title: "DriveScope 3.0.2 hotfix",
-    summary: "Fixes a crash when scanning network drives.",
-  },
-  {
-    date: "2026-10-02",
-    app: "clipnote",
-    version: "0.9.1",
-    title: "ClipNote beta update",
-    summary: "Tag filters and faster search on large histories.",
-  },
-  {
-    date: "2026-09-14",
-    app: "pixelforge",
-    version: "2.1.3",
-    title: "PixelForge 2.1.3",
-    summary: "AVIF encoder is now twice as fast.",
-  },
-];
+// Cada noticia apunta a una app existente por slug y enlaza a su changelog (#v<version>).
+export const news: NewsItem[] = [];
 
 export const socials: Social[] = [
   { label: "YouTube", handle: "@your-channel", url: "#" },
