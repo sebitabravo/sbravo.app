@@ -208,16 +208,25 @@ export function useTranslations(locale: Locale) {
   return (key: UiKey): string => dictionaries[locale][key];
 }
 
+// rutas con slug propio por idioma; la clave es la ruta canónica (la española)
+const localizedSlugs: Record<string, Partial<Record<Locale, string>>> = {
+  "/privacidad/": { en: "/privacy/" },
+};
+
 /** Ruta pública para un locale: el español vive en la raíz, el resto bajo /<locale>/ */
 export function localePath(locale: Locale, path = "/"): string {
-  const clean = path.startsWith("/") ? path : `/${path}`;
+  const canonical = path.startsWith("/") ? path : `/${path}`;
+  const clean = localizedSlugs[canonical]?.[locale] ?? canonical;
   return locale === defaultLocale ? clean : `/${locale}${clean === "/" ? "/" : clean}`;
 }
 
-/** Quita el prefijo de locale para encontrar la misma página en otro idioma */
+/** Quita el prefijo de locale y devuelve la ruta canónica, para encontrar la misma página en otro idioma */
 export function stripLocale(pathname: string): string {
   const [, first, ...rest] = pathname.split("/");
-  return isLocale(first) && first !== defaultLocale ? `/${rest.join("/")}` : pathname;
+  if (!isLocale(first) || first === defaultLocale) return pathname;
+  const path = `/${rest.join("/")}`;
+  const canonical = Object.entries(localizedSlugs).find(([, slugs]) => slugs[first] === path)?.[0];
+  return canonical ?? path;
 }
 
 export const dateLocale: Record<Locale, string> = { es: "es-CL", en: "en-US" };

@@ -13,6 +13,17 @@ describe("localePath", () => {
   });
 });
 
+describe("localized slugs", () => {
+  it("translates the privacy page slug per locale", () => {
+    expect(localePath("es", "/privacidad/")).toBe("/privacidad/");
+    expect(localePath("en", "/privacidad/")).toBe("/en/privacy/");
+  });
+
+  it("maps the English slug back to the canonical path", () => {
+    expect(stripLocale("/en/privacy/")).toBe("/privacidad/");
+  });
+});
+
 describe("stripLocale", () => {
   it("removes the English prefix", () => {
     expect(stripLocale("/en/apps/demo/")).toBe("/apps/demo/");
