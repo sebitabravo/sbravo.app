@@ -45,4 +45,8 @@ export const news: NewsItem[] = [];
 
 // Agrega tus redes reales; la sección se oculta mientras esté vacía.
 // { label: "YouTube", handle: "@tu-canal", url: "https://youtube.com/@tu-canal" }
-export const socials: Social[] = [];
+export const socials: Social[] = [
+  { label: "GitHub", handle: "sebitabravo", url: "https://github.com/sebitabravo" },
+  { label: "YouTube", handle: "@sebitabravo", url: "https://www.youtube.com/@sebitabravo" },
+  { label: "X", handle: "@sebitabrav0", url: "https://x.com/sebitabrav0" },
+];

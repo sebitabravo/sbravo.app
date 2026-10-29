@@ -10,10 +10,18 @@ interface Props {
 const { socials } = Astro.props;
 const t = useTranslations(toLocale(Astro.currentLocale));
 // trazos genéricos (sin logos de marca) según el tipo de red
-const iconPath = (label: string) =>
-  /youtube|video|twitch/i.test(label)
-    ? "M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11ZM10 9l5 3-5 3V9Z"
-    : "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5 8a5 5 0 0 1 10 0M16 11a2.5 2.5 0 1 0 0-5M17.5 19a4.5 4.5 0 0 0-2.6-4.1";
+const icons = {
+  code: "M8 8l-4 4 4 4M16 8l4 4-4 4M13.5 5l-3 14",
+  video: "M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11ZM10 9l5 3-5 3V9Z",
+  post: "M5 5h14v10H9l-4 4V5ZM9 9h6M9 12h4",
+  people: "M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-5 8a5 5 0 0 1 10 0M16 11a2.5 2.5 0 1 0 0-5M17.5 19a4.5 4.5 0 0 0-2.6-4.1",
+};
+const iconPath = (label: string) => {
+  if (/github|gitlab|code/i.test(label)) return icons.code;
+  if (/youtube|video|twitch/i.test(label)) return icons.video;
+  if (/^x$|twitter|bluesky|mastodon|threads/i.test(label)) return icons.post;
+  return icons.people;
+};
 ---
 
 <section class="section-y" aria-labelledby="socials-title">
@@ -24,12 +32,13 @@ const iconPath = (label: string) =>
         {t("socials.title.1")} <span class="grad-text">{t("socials.title.2")}</span>
       </h2>
     </div>
-    <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-5">
+    <div class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
       {
         socials.map((social) => (
           <a
             class="group/social flex min-h-26 min-w-0 items-center gap-4 rounded-card border border-line bg-linear-145 from-white/4.5 to-white/1 p-5 transition-colors duration-250 hover:border-cyan/30 hover:from-cyan/6 hover:to-violet/4 max-sm:gap-3 max-sm:p-4 active:scale-[0.99]"
             href={social.url}
+            rel="me noopener"
             aria-label={`${social.label}: ${social.handle}`}
             data-magnetic
             data-reveal
