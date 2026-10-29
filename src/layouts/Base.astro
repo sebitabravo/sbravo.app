@@ -30,7 +30,7 @@ const ogImage = new URL(locale === "en" ? "/og-en.png" : "/og-es.png", Astro.sit
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#06060a" />
+    <meta name="theme-color" content="#0b0a08" />
     {noindex && <meta name="robots" content="noindex" />}
     <link rel="canonical" href={canonical} />
     {
@@ -42,6 +42,7 @@ const ogImage = new URL(locale === "en" ? "/og-en.png" : "/og-es.png", Astro.sit
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="alternate" type="application/rss+xml" title={site.name} href={localePath(locale, "/rss.xml")} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
@@ -58,7 +59,7 @@ const ogImage = new URL(locale === "en" ? "/og-en.png" : "/og-es.png", Astro.sit
   <body class:list={{ "is-loading": intro }}>
     <a
       href="#main"
-      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-200 focus:rounded-full focus:bg-cyan focus:px-4 focus:py-2 focus:text-ink"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-200 focus:rounded-full focus:bg-sand focus:px-4 focus:py-2 focus:text-ink"
     >
       {t("skip")}
     </a>

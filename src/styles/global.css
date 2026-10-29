@@ -1,14 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink: #06060a;
-  --color-surface: #0e0e15;
-  --color-line: rgb(255 255 255 / 0.08);
-  --color-fg: #ecebf5;
-  --color-muted: #8b8a9c;
-  --color-violet: #7c5cff;
-  --color-cyan: #00d4ff;
-  --color-amber: #ffb547;
+  --color-ink: #0b0a08;
+  --color-surface: #141210;
+  --color-line: rgb(232 221 199 / 0.1);
+  --color-fg: #f3ede1;
+  --color-muted: #9a9083;
+  --color-sand: #c8b487;
+  --color-sand-hi: #e0c98f;
+  --color-bronze: #a8895c;
+  --color-clay: #c98a5e;
 
   --font-display: "Unbounded Variable", system-ui, sans-serif;
   --font-sans: "Inter Variable", system-ui, sans-serif;
@@ -26,7 +27,7 @@
 @custom-variant loading (&:where(body.is-loading *));
 
 :root {
-  --grad: linear-gradient(120deg, var(--color-violet), var(--color-cyan));
+  --grad: linear-gradient(115deg, var(--color-sand-hi) 0%, var(--color-sand) 48%, var(--color-bronze) 100%);
   --gutter: clamp(16px, 4vw, 48px);
   --max: 1280px;
   color-scheme: dark;
@@ -35,7 +36,7 @@
 @layer base {
   html {
     background: var(--color-ink);
-    scrollbar-color: color-mix(in srgb, var(--color-violet) 45%, transparent) var(--color-ink);
+    scrollbar-color: color-mix(in srgb, var(--color-sand) 45%, transparent) var(--color-ink);
     /* el intro oculta el scroll; reservar el canal evita que el layout salte al terminar */
     scrollbar-gutter: stable;
   }
@@ -47,7 +48,7 @@
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
     overflow-x: hidden;
-    caret-color: var(--color-cyan);
+    caret-color: var(--color-sand);
   }
 
   body.is-loading {
@@ -78,12 +79,12 @@
   }
 
   ::selection {
-    background: color-mix(in srgb, var(--color-violet) 45%, transparent);
+    background: color-mix(in srgb, var(--color-sand) 45%, transparent);
     color: var(--color-fg);
   }
 
   :focus-visible {
-    outline: 2px solid var(--color-cyan);
+    outline: 2px solid var(--color-sand);
     outline-offset: 3px;
   }
 

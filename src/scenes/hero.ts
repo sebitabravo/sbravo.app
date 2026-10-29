@@ -50,15 +50,15 @@ const blobFragment = /* glsl */ `
   varying float vNoise;
   void main() {
     float fresnel = pow(1.0 - max(dot(normalize(vNormal), normalize(vView)), 0.0), 2.2);
-    vec3 violet = vec3(0.49, 0.36, 1.0);
-    vec3 cyan = vec3(0.0, 0.83, 1.0);
-    vec3 pink = vec3(1.0, 0.3, 0.55);
+    vec3 bronze = vec3(0.659, 0.537, 0.361);
+    vec3 sand = vec3(0.784, 0.706, 0.529);
+    vec3 sandHi = vec3(0.878, 0.788, 0.561);
     float t = sin(vNoise * 2.4 + fresnel * 3.0 + uTime * 0.25) * 0.5 + 0.5;
-    // el rosa queda como acento mínimo: sin él la iridiscencia se lee violeta/cian pura
-    vec3 irid = mix(mix(violet, cyan, t), pink, smoothstep(0.55, 1.0, vNoise * 0.5 + 0.5) * 0.22);
-    vec3 base = vec3(0.02, 0.015, 0.05);
+    // el oro pálido entra como acento mínimo: sin él el cuerpo se lee bronce plano
+    vec3 irid = mix(mix(bronze, sand, t), sandHi, smoothstep(0.55, 1.0, vNoise * 0.5 + 0.5) * 0.22);
+    vec3 base = vec3(0.043, 0.039, 0.031);
     vec3 color = mix(base, irid, 0.12 + fresnel * 0.95);
-    color += cyan * pow(fresnel, 5.0) * 0.6;
+    color += sandHi * pow(fresnel, 5.0) * 0.6;
     gl_FragColor = vec4(color, 1.0);
   }
 `;
@@ -88,7 +88,7 @@ const particleFragment = /* glsl */ `
   void main() {
     float d = length(gl_PointCoord - 0.5);
     float alpha = smoothstep(0.5, 0.0, d);
-    vec3 color = mix(vec3(0.49, 0.36, 1.0), vec3(0.0, 0.83, 1.0), vSeed);
+    vec3 color = mix(vec3(0.659, 0.537, 0.361), vec3(0.878, 0.788, 0.561), vSeed);
     gl_FragColor = vec4(color, alpha * 0.75);
   }
 `;

@@ -1,22 +1,81 @@
 ---
 import Logo from "../Logo.astro";
 import Arrow from "../icons/Arrow.astro";
-import { site } from "../../data/catalog";
+import { news, site, socials } from "../../data/catalog";
 import { localePath, toLocale, useTranslations } from "../../i18n/ui";
 
 const locale = toLocale(Astro.currentLocale);
 const t = useTranslations(locale);
 const year = new Date().getFullYear();
+const home = localePath(locale);
+
+const sections = [
+  { label: t("nav.catalog"), href: `${home}#catalog` },
+  { label: t("nav.about"), href: `${home}#about` },
+  ...(news.length > 0 ? [{ label: t("nav.updates"), href: `${home}#news` }] : []),
+];
+const profiles = [
+  ...socials.map((social) => ({ label: social.label, href: social.url })),
+  ...(site.supportUrl ? [{ label: t("nav.support"), href: site.supportUrl }] : []),
+];
 ---
 
 <footer class="border-t border-line bg-surface pt-13.5 pb-6">
-  <div class="shell grid gap-10.5">
-    <a class="inline-flex w-fit text-[clamp(28px,5vw,48px)]" href={localePath(locale)} aria-label={t("footer.home")}>
-      <Logo wordmark title="" />
-    </a>
-    <div class="flex flex-wrap items-center justify-between gap-x-5 gap-y-3 border-t border-line pt-4.5 font-mono text-xs text-muted">
-      <span class="tabular-nums">&copy; {year} {site.name}</span>
-      <a class="inline-flex min-h-11 items-center gap-1.5 text-fg transition-colors hover:text-cyan" href="#main">
+  <div class="shell">
+    <div class="grid gap-11 sm:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_auto_auto] lg:gap-16">
+      <div class="max-w-[38ch]">
+        <a class="inline-flex text-[clamp(26px,4vw,40px)]" href={home} aria-label={t("footer.home")}>
+          <Logo wordmark title="" />
+        </a>
+        <p class="mt-5 text-sm text-muted">{t("footer.tagline")}</p>
+      </div>
+      <nav aria-label={t("footer.nav")} class="min-w-32">
+        <h2 class="eyebrow">{t("footer.sections")}</h2>
+        <ul class="mt-4 grid gap-0.5 text-sm">
+          {
+            sections.map((link) => (
+              <li>
+                <a
+                  class="inline-flex min-h-9 items-center text-muted transition-colors hover:text-fg"
+                  href={link.href}
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+      <nav aria-label={t("footer.profiles")} class="min-w-32">
+        <h2 class="eyebrow">{t("footer.elsewhere")}</h2>
+        <ul class="mt-4 grid gap-0.5 text-sm">
+          {
+            profiles.map((link) => (
+              <li>
+                <a
+                  class="inline-flex min-h-9 items-center text-muted transition-colors hover:text-fg"
+                  href={link.href}
+                  rel="me noopener"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+    </div>
+    <div class="mt-11 flex flex-wrap items-center justify-between gap-x-5 gap-y-3 border-t border-line pt-4.5 font-mono text-xs text-muted">
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        <span class="tabular-nums">&copy; {year} {site.name}</span>
+        <a class="inline-flex min-h-11 items-center transition-colors hover:text-fg" href={localePath(locale, "/privacidad/")}>
+          {t("footer.privacy")}
+        </a>
+        <a class="inline-flex min-h-11 items-center transition-colors hover:text-fg" href={localePath(locale, "/rss.xml")}>
+          RSS
+        </a>
+      </div>
+      <a class="inline-flex min-h-11 items-center gap-1.5 text-fg transition-colors hover:text-sand" href="#main">
         {t("footer.top")} <Arrow direction="up" class="size-3.5" />
       </a>
     </div>

@@ -158,6 +158,39 @@ function applyScrollMotion(): void {
   if (!document.querySelector("[data-intro]") && !body.classList.contains("is-loading")) start();
 }
 
+// marca en el header la sección visible; corre también sin animaciones, es orientación, no motion
+function trackActiveSection(): void {
+  const links = [...document.querySelectorAll<HTMLAnchorElement>("header nav a[href*='#']")];
+  if (links.length === 0) return;
+  const targets = links
+    .map((link) => ({ link, element: link.hash ? document.getElementById(link.hash.slice(1)) : null }))
+    .filter((entry): entry is { link: HTMLAnchorElement; element: HTMLElement } => entry.element !== null);
+  if (targets.length === 0) return;
+
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const line = window.innerHeight * 0.35;
+    let current: HTMLElement | null = null;
+    for (const { element } of targets) {
+      if (element.getBoundingClientRect().top <= line) current = element;
+    }
+    for (const { link, element } of targets) {
+      if (element === current) link.setAttribute("aria-current", "true");
+      else link.removeAttribute("aria-current");
+    }
+  };
+  const schedule = () => {
+    if (!frame) frame = requestAnimationFrame(update);
+  };
+
+  window.addEventListener("scroll", schedule, { passive: true });
+  window.addEventListener("resize", schedule);
+  update();
+}
+
+trackActiveSection();
+
 if (reducedMotion.matches) {
   revealStaticContent();
 } else {

@@ -1,21 +1,35 @@
 ---
 import Base from "../layouts/Base.astro";
 import Header from "../components/Header.astro";
+import Logo from "../components/Logo.astro";
 import { localePath } from "../i18n/ui";
 ---
 
 <Base title="404 - sbravo" description="Página no encontrada / Page not found" noindex>
   <Header />
-  <main id="main" tabindex="-1" class="shell section-y grid min-h-svh content-center gap-10 pt-32">
-    <section lang="es">
-      <h1 class="text-section">Página no encontrada</h1>
-      <p class="mt-4 text-muted">Esta página no existe o se movió.</p>
-      <a class="btn btn-primary mt-7" href={localePath("es")}>Volver al inicio</a>
+  <main id="main" tabindex="-1" class="shell grid min-h-svh content-center gap-12 pt-32 pb-24">
+    <a class="inline-flex w-fit text-[clamp(24px,4vw,34px)]" href={localePath("es")} aria-label="sbravo">
+      <Logo wordmark title="" />
+    </a>
+    <section lang="es" class="grid gap-3">
+      <p class="eyebrow">Error 404</p>
+      <h1 class="text-section max-w-[18ch]">Esta página no existe.</h1>
+      <p class="max-w-[46ch] text-muted">Se movió o nunca estuvo acá. El catálogo sigue donde mismo.</p>
+      <div class="mt-5 flex flex-wrap gap-3">
+        <a class="btn btn-primary" href={localePath("es")}>Volver al inicio</a>
+        <a class="btn" href={`${localePath("es")}#catalog`}>Ver catálogo</a>
+      </div>
     </section>
-    <section lang="en" class="border-t border-line pt-10">
-      <h2 class="text-card">Page not found</h2>
-      <p class="mt-2 text-muted">This page does not exist or has moved.</p>
-      <a class="btn mt-5" href={localePath("en")}>Back to home</a>
+    <section lang="en" class="grid gap-3 border-t border-line pt-10">
+      <p class="eyebrow">Error 404</p>
+      <h2 class="text-card">This page does not exist.</h2>
+      <p class="max-w-[46ch] text-sm text-muted">It moved or was never here. The catalog is still where it was.</p>
+      <div class="mt-3 flex flex-wrap gap-3">
+        <a class="btn" href={localePath("en")}>Back to home</a>
+        <a class="inline-flex min-h-11 items-center gap-1.5 text-sm text-fg transition-colors hover:text-sand" href={`${localePath("en")}#catalog`}>
+          Browse catalog
+        </a>
+      </div>
     </section>
   </main>
 </Base>

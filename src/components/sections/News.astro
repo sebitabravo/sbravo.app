@@ -33,7 +33,7 @@ const t = useTranslations(locale);
           {news.map((item) => (
             <li class="relative min-w-0 pb-7.5 pl-4.25" data-reveal>
               <span
-                class="absolute top-1 -left-4.75 size-2.25 rounded-full border-2 border-cyan bg-ink shadow-[0_2px_12px_rgb(0_212_255/0.45)]"
+                class="absolute top-1 -left-4.75 size-2.25 rounded-full border-2 border-sand bg-ink shadow-[0_2px_12px_rgb(200_180_135/0.45)]"
                 aria-hidden="true"
               />
               <time
@@ -47,7 +47,7 @@ const t = useTranslations(locale);
                 href={`${localePath(locale, `/apps/${item.app}/`)}#${versionAnchor(item.version)}`}
               >
                 <h3
-                  class="inline-block text-card transition-colors group-hover/news:text-cyan"
+                  class="inline-block text-card transition-colors group-hover/news:text-sand"
                   data-split
                 >
                   {splitWords(item.title[locale]).map((token) =>
@@ -56,7 +56,7 @@ const t = useTranslations(locale);
                 </h3>
                 <p class="mt-2 mb-2.5 text-[13px] leading-[1.55] text-muted">{item.summary[locale]}</p>
                 <span class="inline-flex min-h-8 items-center gap-1.75 font-mono text-xs text-fg">
-                  {t("news.version")} {item.version} <Arrow class="size-3.5 text-cyan" />
+                  {t("news.version")} {item.version} <Arrow class="size-3.5 text-sand" />
                 </span>
               </a>
             </li>
@@ -75,6 +75,6 @@ const t = useTranslations(locale);
     left: 4px;
     width: 1px;
     content: "";
-    background: linear-gradient(var(--color-violet), var(--color-line) 80%, transparent);
+    background: linear-gradient(var(--color-sand), var(--color-line) 80%, transparent);
   }
 </style>

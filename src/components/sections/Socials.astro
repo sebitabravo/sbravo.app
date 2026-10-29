@@ -36,14 +36,14 @@ const iconPath = (label: string) => {
       {
         socials.map((social) => (
           <a
-            class="group/social flex min-h-26 min-w-0 items-center gap-4 rounded-card border border-line bg-linear-145 from-white/4.5 to-white/1 p-5 transition-colors duration-250 hover:border-cyan/30 hover:from-cyan/6 hover:to-violet/4 max-sm:gap-3 max-sm:p-4 active:scale-[0.99]"
+            class="group/social flex min-h-26 min-w-0 items-center gap-4 rounded-card border border-line bg-linear-145 from-white/4.5 to-white/1 p-5 transition-colors duration-250 hover:border-sand/30 hover:from-sand/6 hover:to-bronze/4 max-sm:gap-3 max-sm:p-4 active:scale-[0.99]"
             href={social.url}
             rel="me noopener"
             aria-label={`${social.label}: ${social.handle}`}
             data-magnetic
             data-reveal
           >
-            <span class="grid size-12 shrink-0 place-items-center rounded-tile border border-line bg-white/4 text-cyan">
+            <span class="grid size-12 shrink-0 place-items-center rounded-tile border border-line bg-white/4 text-sand">
               <svg viewBox="0 0 24 24" fill="none" class="size-5.5" aria-hidden="true">
                 <path
                   d={iconPath(social.label)}

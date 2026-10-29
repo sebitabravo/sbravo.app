@@ -1,0 +1,142 @@
+---
+import Base from "../layouts/Base.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/sections/Footer.astro";
+import { site } from "../data/catalog";
+import { toLocale, type Locale } from "../i18n/ui";
+
+const locale = toLocale(Astro.currentLocale);
+const updated = "2026-10-29";
+
+interface Block {
+  title: string;
+  body: string[];
+}
+
+const content: Record<Locale, { eyebrow: string; title: string; lead: string; blocks: Block[]; contact: string }> = {
+  es: {
+    eyebrow: "Legal",
+    title: "Privacidad",
+    lead: "Este sitio no pide datos personales. Esto es todo lo que pasa cuando lo visitás.",
+    blocks: [
+      {
+        title: "Qué se guarda",
+        body: [
+          "No hay formularios de registro, cuentas ni base de datos. No hay analítica, píxeles de seguimiento ni publicidad.",
+          "Las tipografías se sirven desde este mismo dominio: el navegador no hace pedidos a Google Fonts ni a terceros.",
+        ],
+      },
+      {
+        title: "Almacenamiento local",
+        body: [
+          "Se guarda una marca en sessionStorage llamada sb-intro-seen para no repetir la animación de entrada en la misma visita. Se borra al cerrar la pestaña y no identifica a nadie.",
+          "No se usan cookies.",
+        ],
+      },
+      {
+        title: "Hosting y registros",
+        body: [
+          "El proveedor de hosting puede registrar datos técnicos de cada pedido, como dirección IP, navegador y fecha, para entregar el sitio y protegerse de abuso.",
+          "Esos registros no se cruzan con otros datos ni se usan para perfilado.",
+        ],
+      },
+      {
+        title: "Enlaces externos",
+        body: [
+          "Los enlaces a GitHub, YouTube, X y GitHub Sponsors salen de este sitio. A partir de ahí rigen las políticas de cada plataforma.",
+          "Las descargas pueden alojarse en GitHub Releases, con las mismas condiciones.",
+        ],
+      },
+      {
+        title: "Tus derechos",
+        body: [
+          "La Ley 21.719 de protección de datos personales reconoce los derechos de acceso, rectificación, supresión y oposición. Como este sitio no almacena datos personales, en la práctica no hay información que rectificar.",
+          "Si creés que hay un dato tuyo involucrado, escribí por GitHub y se responde a la brevedad.",
+        ],
+      },
+    ],
+    contact: "Contacto",
+  },
+  en: {
+    eyebrow: "Legal",
+    title: "Privacy",
+    lead: "This site does not ask for personal data. This is everything that happens when you visit it.",
+    blocks: [
+      {
+        title: "What is stored",
+        body: [
+          "There are no sign-up forms, accounts or database. No analytics, tracking pixels or advertising.",
+          "Fonts are served from this same domain: your browser makes no requests to Google Fonts or any third party.",
+        ],
+      },
+      {
+        title: "Local storage",
+        body: [
+          "A sessionStorage flag named sb-intro-seen keeps the intro animation from replaying during the same visit. It is cleared when the tab closes and identifies no one.",
+          "No cookies are used.",
+        ],
+      },
+      {
+        title: "Hosting and logs",
+        body: [
+          "The hosting provider may log technical data for each request, such as IP address, browser and date, to deliver the site and protect it from abuse.",
+          "Those logs are not combined with other data or used for profiling.",
+        ],
+      },
+      {
+        title: "External links",
+        body: [
+          "Links to GitHub, YouTube, X and GitHub Sponsors leave this site. From there, each platform's policy applies.",
+          "Downloads may be hosted on GitHub Releases, under the same conditions.",
+        ],
+      },
+      {
+        title: "Your rights",
+        body: [
+          "Chile's data protection law (21.719) grants rights of access, rectification, deletion and objection. Since this site stores no personal data, there is in practice nothing to rectify.",
+          "If you believe data of yours is involved, reach out on GitHub and you will get an answer.",
+        ],
+      },
+    ],
+    contact: "Contact",
+  },
+};
+
+const { eyebrow, title, lead, blocks, contact } = content[locale];
+const github = "https://github.com/sebitabravo";
+---
+
+<Base title={`${title} - ${site.name}`} description={lead}>
+  <Header />
+  <main id="main" tabindex="-1" class="section-y pt-32">
+    <article class="shell max-w-[72ch]">
+      <p class="eyebrow">{eyebrow}</p>
+      <h1 class="mt-4 text-section">{title}</h1>
+      <p class="mt-5 max-w-[52ch] text-muted">{lead}</p>
+      <p class="mt-3 font-mono text-xs text-muted">
+        <time datetime={updated}>{updated}</time>
+      </p>
+      <div class="mt-14 grid gap-10">
+        {
+          blocks.map((block) => (
+            <section class="grid gap-3 border-t border-line pt-7">
+              <h2 class="text-card">{block.title}</h2>
+              {block.body.map((paragraph) => (
+                <p class="text-sm leading-[1.65] text-muted">{paragraph}</p>
+              ))}
+            </section>
+          ))
+        }
+        <section class="grid gap-3 border-t border-line pt-7">
+          <h2 class="text-card">{contact}</h2>
+          <p class="text-sm leading-[1.65] text-muted">
+            <a class="text-fg underline decoration-line underline-offset-4 transition-colors hover:text-sand" href={github} rel="me noopener">
+              github.com/sebitabravo
+            </a>
+          </p>
+        </section>
+      </div>
+    </article>
+  </main>
+  <Footer />
+</Base>

@@ -28,7 +28,7 @@ export const site: Site = {
 //   author: "sbravo",
 //   uploaded: "2026-11-01",
 //   category: { es: "Utilidad", en: "Utility" },
-//   accent: "#7c5cff",
+//   accent: "#c8b487",
 //   downloadUrl: "https://github.com/sebitabravo/my-tool/releases/download/v1.0.0/my-tool-setup.exe",
 //   thumb: "/thumbs/my-tool.webp",
 //   platforms: ["Windows 11"],
