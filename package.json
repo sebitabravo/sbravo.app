@@ -28,5 +28,6 @@
     "@astrojs/check": "0.9.10",
     "typescript": "6.0.3",
     "@vitest/coverage-v8": "5.0.4"
-  }
+  },
+  "license": "MIT"
 }

@@ -25,3 +25,10 @@ primera herramienta.
 | Sobre el autor | Vista móvil |
 |---|---|
 | ![Sección con la explicación del proyecto y sus principios](docs/screenshots/about.webp) | ![Portada en un teléfono de 390 px](docs/screenshots/mobile.webp) |
+
+## Licencia
+
+El código está bajo la [licencia MIT](LICENSE).
+
+El nombre sbravo, el logo y los textos del sitio no están incluidos en esa licencia:
+si reutilizas el código, usa tu propia marca y contenido.
