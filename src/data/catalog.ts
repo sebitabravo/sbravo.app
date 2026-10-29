@@ -7,7 +7,7 @@ export const site: Site = {
     es: "Herramientas gratis · Changelogs honestos · Descargas directas · En español e inglés",
     en: "Free tools · Honest changelogs · Direct downloads · In Spanish and English",
   },
-  supportUrl: "",
+  supportUrl: "https://github.com/sponsors/sebitabravo",
   notice: {
     es: "Si una descarga falla, vuelve a intentarlo en unos minutos.",
     en: "If a download fails, try again in a few minutes.",
