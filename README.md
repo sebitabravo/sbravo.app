@@ -10,17 +10,19 @@ hero cae a un degradado estático cuando no hay WebGL.
 
 ## Capturas
 
-<img src="docs/screenshots/home.png" width="100%" alt="Portada con el titular, el orbe del hero y los accesos al catálogo y a GitHub Sponsors" />
+| Portada | Catálogo |
+|---|---|
+| ![Portada con el titular, el orbe del hero y los accesos al catálogo y a GitHub Sponsors](docs/screenshots/home.webp) | ![Catálogo con el estado previo al primer release](docs/screenshots/catalog.webp) |
 
-<img src="docs/screenshots/catalog.png" width="100%" alt="Sección de catálogo mostrando el estado previo al primer release" />
-
-<img src="docs/screenshots/mobile.png" width="390" alt="Vista móvil de la portada" />
+| Sobre el autor | Vista móvil |
+|---|---|
+| ![Sección con la explicación del proyecto y sus principios](docs/screenshots/about.webp) | ![Portada en un teléfono de 390 px](docs/screenshots/mobile.webp) |
 
 ## Stack
 
-- [Astro](https://astro.build) 7 — salida estática y ruteo i18n integrado
-- [Tailwind CSS](https://tailwindcss.com) 4 — tokens de diseño en `src/styles/global.css`
-- [three.js](https://threejs.org) 0.186 — escena del hero, cargada en un chunk aparte
-- [GSAP](https://gsap.com) y [Lenis](https://lenis.darkroom.engineering) — animación ligada al scroll
-- [Vitest](https://vitest.dev) — tests de catálogo, i18n y feed RSS
-- TypeScript en modo estricto sobre todo el proyecto
+- **Framework:** Astro 7 con salida estática y ruteo i18n integrado
+- **Estilos:** Tailwind CSS 4 con tokens de diseño en `src/styles/global.css`
+- **3D y movimiento:** three.js 0.186 para la escena del hero, GSAP 3 y Lenis para el scroll
+- **Lenguaje:** TypeScript en modo estricto
+- **Tests:** Vitest sobre catálogo, i18n y feed RSS
+- **Contenido:** catálogo tipado en `src/data/catalog.ts`, validado en cada build
