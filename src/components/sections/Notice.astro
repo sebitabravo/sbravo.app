@@ -7,14 +7,63 @@ interface Props {
 
 const { text } = Astro.props;
 const t = useTranslations(toLocale(Astro.currentLocale));
+const hashText = (value: string) => {
+  let hash = 5381;
+  for (let index = 0; index < value.length; index++) {
+    hash = (((hash << 5) + hash) + value.charCodeAt(index)) >>> 0;
+  }
+  return hash.toString(36);
+};
+const noticeHash = hashText(text);
 ---
 
-<aside class="border-b border-clay/18 bg-clay/5 py-4.5" aria-label={t("notice.label")} role="note">
+<aside
+  class="border-b border-clay/18 bg-clay/5 py-4.5"
+  aria-label={t("notice.label")}
+  role="note"
+  data-notice
+  data-hash={noticeHash}
+>
   <div class="shell flex items-start gap-3">
     <svg viewBox="0 0 24 24" fill="none" class="mt-0.5 size-5.5 shrink-0 text-clay" aria-hidden="true">
       <path d="M12 3.5 21 20H3l9-16.5Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
       <path d="M12 9v5m0 2.5v.1" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
     </svg>
-    <p class="text-sm leading-[1.55] text-muted"><strong class="mr-1 text-fg">{t("notice.title")}</strong> {text}</p>
+    <p class="min-w-0 flex-1 text-sm leading-[1.55] text-muted">
+      <strong class="mr-1 text-fg">{t("notice.title")}</strong> {text}
+    </p>
+    <button
+      type="button"
+      class="grid size-11 shrink-0 place-items-center rounded-full text-muted transition-colors duration-200 hover:text-fg"
+      aria-label={t("notice.dismiss")}
+      data-notice-dismiss
+    >
+      <svg viewBox="0 0 24 24" fill="none" class="size-4" aria-hidden="true">
+        <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" />
+      </svg>
+    </button>
   </div>
 </aside>
+
+<script is:inline>
+  (() => {
+    const notice = document.querySelector("[data-notice]");
+    const dismissButton = notice?.querySelector("[data-notice-dismiss]");
+    const noticeHash = notice?.getAttribute("data-hash");
+
+    if (notice && dismissButton && noticeHash) {
+      try {
+        if (localStorage.getItem("sb-notice-dismissed") === noticeHash) {
+          notice.hidden = true;
+        }
+      } catch {}
+
+      dismissButton.addEventListener("click", () => {
+        notice.hidden = true;
+        try {
+          localStorage.setItem("sb-notice-dismissed", noticeHash);
+        } catch {}
+      });
+    }
+  })();
+</script>
