@@ -1,0 +1,55 @@
+---
+import { toLocale, useTranslations } from "../i18n/ui";
+
+interface Props {
+  /** clave estable del hilo; la misma en ambos idiomas para no partir la conversación */
+  term: string;
+}
+
+const { term } = Astro.props;
+const locale = toLocale(Astro.currentLocale);
+const t = useTranslations(locale);
+
+// valores que entrega la API de GitHub para el repo y la categoría "Announcements" de Discussions
+const giscus = {
+  repo: "sebitabravo/sbravo.app",
+  repoId: "R_kgDOVbksMw",
+  category: "Announcements",
+  categoryId: "DIC_kwDOVbksM84DJ6QP",
+  // jsDelivr sirve el CSS con CORS, que giscus exige al cargar un tema propio
+  theme: "https://cdn.jsdelivr.net/gh/sebitabravo/sbravo.app@main/public/giscus.css",
+};
+---
+
+<section class="mt-30 scroll-mt-24" id="comments" aria-labelledby="comments-title">
+  <div class="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-6">
+    <div>
+      <p class="eyebrow">{t("comments.eyebrow")}</p>
+      <h2 id="comments-title" class="mt-3 text-section">{t("comments.title")}</h2>
+    </div>
+    <p class="max-w-[40ch] text-sm text-muted">{t("comments.lead")}</p>
+  </div>
+  <div class="comments__frame mt-8 min-h-48" data-comments>
+    <noscript>
+      <p class="text-sm text-muted">{t("comments.noscript")}</p>
+    </noscript>
+  </div>
+  <script
+    is:inline
+    src="https://giscus.app/client.js"
+    data-repo={giscus.repo}
+    data-repo-id={giscus.repoId}
+    data-category={giscus.category}
+    data-category-id={giscus.categoryId}
+    data-mapping="specific"
+    data-term={term}
+    data-strict="1"
+    data-reactions-enabled="1"
+    data-emit-metadata="0"
+    data-input-position="top"
+    data-theme={giscus.theme}
+    data-lang={locale}
+    data-loading="lazy"
+    crossorigin="anonymous"
+    async></script>
+</section>

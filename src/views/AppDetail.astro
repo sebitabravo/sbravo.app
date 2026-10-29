@@ -3,6 +3,7 @@ import Base from "../layouts/Base.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/sections/Footer.astro";
 import Logo from "../components/Logo.astro";
+import Comments from "../components/Comments.astro";
 import { news } from "../data/catalog";
 import { formatDate, sortByDateDesc, versionAnchor } from "../lib/catalog";
 import { dateLocale, localePath, toLocale, useTranslations } from "../i18n/ui";
@@ -111,6 +112,43 @@ const jsonLd = {
     }
 
     {
+      (app.requirements || app.install) && (
+        <section class="mt-24 grid gap-4 md:grid-cols-2" aria-label={t("detail.setup")}>
+          {app.requirements && (
+            <div class="rounded-card border border-line bg-surface p-[clamp(22px,3vw,32px)]">
+              <h2 class="eyebrow">{t("detail.requirements")}</h2>
+              <ul class="mt-5 grid gap-3">
+                {app.requirements[locale].map((item) => (
+                  <li class="flex items-start gap-3 text-sm">
+                    <svg viewBox="0 0 24 24" fill="none" class="mt-0.5 size-4.5 shrink-0 text-sand" aria-hidden="true">
+                      <path d="m5 12.5 4.5 4.5L19 7.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span class="wrap-anywhere">{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {app.install && (
+            <div class="rounded-card border border-line bg-surface p-[clamp(22px,3vw,32px)]">
+              <h2 class="eyebrow">{t("detail.install")}</h2>
+              <ol class="mt-5 grid gap-4">
+                {app.install[locale].map((step, index) => (
+                  <li class="grid grid-cols-[2rem_1fr] items-start gap-3 text-sm">
+                    <span class="grid size-8 place-items-center rounded-full border border-line font-mono text-xs text-sand tabular-nums">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span class="pt-1.5 wrap-anywhere">{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          )}
+        </section>
+      )
+    }
+
+    {
       changelog.length > 0 && (
         <section class="mt-30" aria-labelledby="changelog-title">
           <h2 id="changelog-title" class="text-section">
@@ -130,6 +168,8 @@ const jsonLd = {
         </section>
       )
     }
+
+    <Comments term={`app:${app.slug}`} />
   </main>
   <Footer />
 </Base>

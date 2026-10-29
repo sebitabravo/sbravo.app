@@ -30,6 +30,7 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
         title: "Almacenamiento local",
         body: [
           "Se guarda una marca en sessionStorage llamada sb-intro-seen para no repetir la animación de entrada en la misma visita. Se borra al cerrar la pestaña y no identifica a nadie.",
+          "Si cierras el aviso de descargas, se guarda en localStorage (sb-notice-dismissed) una huella del texto del aviso para no volver a mostrarlo. Solo vuelve a aparecer si el aviso cambia.",
           "No se usan cookies.",
         ],
       },
@@ -45,6 +46,7 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
         body: [
           "Los enlaces a GitHub, YouTube, X y GitHub Sponsors salen de este sitio. A partir de ahí rigen las políticas de cada plataforma.",
           "Las descargas pueden alojarse en GitHub Releases, con las mismas condiciones.",
+          "Los comentarios de cada ficha usan giscus, que los guarda en GitHub Discussions. Para comentar inicias sesión con GitHub y lo que escribes queda público en el repositorio del sitio, bajo las políticas de GitHub. El widget se carga solo cuando llegas a esa sección.",
         ],
       },
       {
@@ -73,6 +75,7 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
         title: "Local storage",
         body: [
           "A sessionStorage flag named sb-intro-seen keeps the intro animation from replaying during the same visit. It is cleared when the tab closes and identifies no one.",
+          "If you dismiss the download notice, localStorage (sb-notice-dismissed) keeps a fingerprint of the notice text so it is not shown again. It only reappears if the notice changes.",
           "No cookies are used.",
         ],
       },
@@ -88,6 +91,7 @@ const content: Record<Locale, { eyebrow: string; title: string; lead: string; bl
         body: [
           "Links to GitHub, YouTube, X and GitHub Sponsors leave this site. From there, each platform's policy applies.",
           "Downloads may be hosted on GitHub Releases, under the same conditions.",
+          "Comments on each listing use giscus, which stores them in GitHub Discussions. You sign in with GitHub to comment and what you write is public in the site repository, under GitHub's policies. The widget only loads when you reach that section.",
         ],
       },
       {
